@@ -41,101 +41,92 @@ window.coordinatorModule = (function () {
 
     container.innerHTML = `
       <div class="page-container">
-        <!-- Header -->
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Placement Operations Hub</h1>
-            <p class="page-subtitle">Manage industry opportunities, student eligibility, applications, filtering & recruiter shortlists</p>
+        <!-- Spatial Hero Header -->
+        <div class="spatial-hero-banner">
+          <div class="hero-tag">ENTERPRISE TALENT CONTROL CENTER</div>
+          <h1 class="hero-title">Placement Operations <span>Command Hub</span></h1>
+          <p class="hero-desc">
+            Orchestrate verified candidate pools, live recruiter-expectation screening filters, and bi-directional candidate pipeline transmission with HIERO Connect.
+          </p>
+        </div>
+
+        <!-- 3D Interactive Ecosystem Canvas Frame -->
+        <div class="spatial-3d-wrapper">
+          <div class="spatial-3d-header">
+            <div class="spatial-3d-title-block">
+              <div class="kpi-icon-box" style="width: 34px; height: 34px;">🌐</div>
+              <div>
+                <div class="spatial-3d-title">Academia ↔ Talent ↔ Industry 3D Network</div>
+                <div class="spatial-3d-sub">Interactive WebGL spatial topology • Hover nodes for live telemetry metrics</div>
+              </div>
+            </div>
+            <div class="spatial-3d-controls">
+              <button class="btn-3d-ctrl" onclick="hieroEcosystem3D.toggleRotation()">
+                ↻ Toggle Orbit
+              </button>
+              <button class="btn-3d-ctrl" onclick="app.openEcosystemMapModal()">
+                ⛶ Expand Modal
+              </button>
+            </div>
           </div>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary" onclick="coordinatorModule.openRecruiterSyncModal()">
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-              HIERO Connect Sync
-            </button>
-            <button class="btn btn-primary" onclick="coordinatorModule.selectOpportunity('${opps[0]?.id || ''}')">
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-              Screen Candidates
-            </button>
+          <div id="dashboard-3d-ecosystem-mount"></div>
+        </div>
+
+        <!-- Spatial 4-KPI Metric Grid -->
+        <div class="kpi-spatial-grid">
+          <div class="kpi-spatial-card">
+            <div class="kpi-header-row">
+              <div class="kpi-icon-box">👥</div>
+              <span class="kpi-badge badge-success">Verified Pool</span>
+            </div>
+            <div class="kpi-metric-val">${totalStudents}</div>
+            <div class="kpi-label">Verified Final-Year Students</div>
+            <div class="kpi-subtext">100% Locked & Authenticated by College</div>
+            <div class="kpi-micro-bar"><div class="kpi-micro-fill" style="width: 95%;"></div></div>
+          </div>
+
+          <div class="kpi-spatial-card">
+            <div class="kpi-header-row">
+              <div class="kpi-icon-box" style="color: var(--accent-cyan);">🏢</div>
+              <span class="kpi-badge badge-info">Active Pipeline</span>
+            </div>
+            <div class="kpi-metric-val">${activeOpps}</div>
+            <div class="kpi-label">Industry Campus Drives</div>
+            <div class="kpi-subtext">Synced from HIERO Connect Recruiter Hub</div>
+            <div class="kpi-micro-bar"><div class="kpi-micro-fill" style="width: 80%; background: var(--accent-cyan);"></div></div>
+          </div>
+
+          <div class="kpi-spatial-card">
+            <div class="kpi-header-row">
+              <div class="kpi-icon-box" style="color: var(--warning);">⚡</div>
+              <span class="kpi-badge badge-warning">Review Ready</span>
+            </div>
+            <div class="kpi-metric-val" style="color: var(--warning);">${shortlistedCount}</div>
+            <div class="kpi-label">Filtered Shortlists</div>
+            <div class="kpi-subtext">Passed Recruiter Expectation Thresholds</div>
+            <div class="kpi-micro-bar"><div class="kpi-micro-fill" style="width: 70%; background: var(--warning);"></div></div>
+          </div>
+
+          <div class="kpi-spatial-card">
+            <div class="kpi-header-row">
+              <div class="kpi-icon-box" style="color: var(--success);">🏆</div>
+              <span class="kpi-badge badge-success">Conversions</span>
+            </div>
+            <div class="kpi-metric-val" style="color: var(--success);">${selectedCount}</div>
+            <div class="kpi-label">Confirmed Placement Offers</div>
+            <div class="kpi-subtext">Issued via HIERO Connect Recruiter Stream</div>
+            <div class="kpi-micro-bar"><div class="kpi-micro-fill" style="width: 88%;"></div></div>
           </div>
         </div>
 
-        <!-- Metric Cards (6 core metrics from Req 23) -->
-        <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Final-Year Pool</span>
-              <div class="metric-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-              </div>
-            </div>
-            <div class="metric-value">${totalStudents}</div>
-            <div class="metric-sub">Verified Candidates</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Active Jobs</span>
-              <div class="metric-icon" style="color: var(--primary-light);">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              </div>
-            </div>
-            <div class="metric-value">${activeOpps}</div>
-            <div class="metric-sub">From HIERO Connect</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Applicants</span>
-              <div class="metric-icon" style="color: #60a5fa;">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              </div>
-            </div>
-            <div class="metric-value">${totalApplicants}</div>
-            <div class="metric-sub">Resumes Collected</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Shortlisted</span>
-              <div class="metric-icon" style="color: var(--warning);">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-              </div>
-            </div>
-            <div class="metric-value" style="color: var(--warning);">${shortlistedCount}</div>
-            <div class="metric-sub">Filtered by Criteria</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Interviews</span>
-              <div class="metric-icon" style="color: var(--secondary);">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/></svg>
-              </div>
-            </div>
-            <div class="metric-value" style="color: var(--secondary);">${interviewCount}</div>
-            <div class="metric-sub">AI Mock + Technical</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-header">
-              <span class="metric-label">Selected</span>
-              <div class="metric-icon" style="color: var(--success);">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-              </div>
-            </div>
-            <div class="metric-value" style="color: var(--success);">${selectedCount}</div>
-            <div class="metric-sub trend-up">Offers Released</div>
-          </div>
-        </div>
-
-        <!-- Opportunity Lifecycle Pipeline Tabs -->
-        <div class="filter-bar">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <!-- Opportunity Lifecycle Pipeline Filter Bar -->
+        <div class="filter-bar" style="margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
             <div class="pipeline-tabs">
               ${renderPipelineTabs(opps)}
             </div>
-            <div class="search-input-wrap" style="width: 260px;">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <div class="search-input-wrap" style="width: 280px;">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
               <input type="text" id="opp-search-input" class="form-control" placeholder="Search opportunities..." oninput="coordinatorModule.renderFilteredOpps()">
             </div>
           </div>
@@ -147,6 +138,13 @@ window.coordinatorModule = (function () {
         </div>
       </div>
     `;
+
+    // Mount Three.js 3D Ecosystem Canvas
+    setTimeout(() => {
+      if (window.hieroEcosystem3D) {
+        hieroEcosystem3D.init('dashboard-3d-ecosystem-mount', { height: 380 });
+      }
+    }, 50);
   }
 
   function renderPipelineTabs(opps) {
