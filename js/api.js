@@ -5,7 +5,9 @@
  */
 
 window.bridgeApi = (function () {
-  const BASE_URL = 'http://localhost:5050/api';
+  const BASE_URL = (typeof window !== 'undefined' && window.location.origin) 
+    ? `${window.location.origin}/api` 
+    : 'http://localhost:2410/api';
   let isBackendOnline = false;
 
   // Check backend server availability on startup
@@ -15,12 +17,12 @@ window.bridgeApi = (function () {
       if (res.ok) {
         const data = await res.json();
         isBackendOnline = true;
-        console.log('🌿 Connected to live HIERO Bridge Backend API:', data);
+        console.log('🌿 Connected to Unified HIERO Bridge Gateway API:', data);
         return true;
       }
     } catch (e) {
       isBackendOnline = false;
-      console.log('ℹ️ Running in standalone offline mode (using local client store)');
+      console.log('ℹ️ Running in standalone mode (using local client store)');
     }
     return false;
   }
