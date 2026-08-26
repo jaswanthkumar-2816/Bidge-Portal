@@ -34,34 +34,56 @@ $$\text{Industry Recruiters (HIERO Connect)} \longrightarrow \text{HIERO Bridge}
 
 ---
 
-## 🚀 How to Run Locally
+## 🚀 Running the Full Stack
 
-You can open `index.html` directly in any modern browser, or serve it via local HTTP server on port **2410**:
+HIERO Bridge is architected into a **Frontend Tier (Port 2410)** and a **Backend REST API Tier (Port 5050)**.
 
+### 1. Start Backend REST API (Port 5050)
 ```bash
-# Using Node.js npx serve on port 2410
+cd backend
+npm install
+npm start
+```
+- **Backend API**: `http://localhost:5050/api`
+- **Healthcheck**: `http://localhost:5050/api/health`
+
+### 2. Start Frontend Client (Port 2410)
+```bash
+# In the project root
 npx -y serve . -p 2410
 ```
-
-Open `http://localhost:2410` in your web browser.
+- **Academic Portal**: `http://localhost:2410/academic-portal.html`
 
 ---
 
-## 📁 File Structure
+## 📁 Full Stack File Structure
 
 ```
 Bidge-Portal/
-├── index.html                   # Main application entry & semantic layout
+├── academic-portal.html         # Biomorphic Academia Portal entry
 ├── css/
-│   └── style.css                # Dark glassmorphic design system
+│   └── style.css                # Biomorphic emerald & organic CSS
 ├── js/
-│   ├── state.js                 # Central state store & LocalStorage persistence
-│   ├── admin.js                 # College admin & student import validation
-│   ├── coordinator.js           # Placement coordinator & candidate screening
-│   ├── student.js               # Student portal & application wizard
-│   ├── interview.js             # AI Voice mock interview & 5-pillar scorecard
-│   ├── connect-sync.js          # HIERO Connect simulator & recruiter feedback
-│   └── app.js                   # Application coordinator & routing
-├── sample-students.csv          # Ready-to-use CSV file for import testing
+│   ├── api.js                   # Central REST API Client (Port 5050 connection)
+│   ├── state.js                 # State store & client-side fallback
+│   ├── admin.js                 # College Admin controller
+│   ├── coordinator.js           # Placement Ops & Candidate screening
+│   ├── student.js               # Student Portal & 5-step apply
+│   ├── interview.js             # AI Mock interview & 5-pillar scorecard
+│   ├── connect-sync.js          # HIERO Connect cross-portal simulator
+│   └── app.js                   # Master router & UI initializer
+├── backend/                     # Production REST API Backend
+│   ├── src/
+│   │   ├── config/database.js   # DB persistence & models
+│   │   ├── middleware/upload.js # Multer file uploader (CSV & PDF)
+│   │   ├── services/            # CSV Validator & Candidate Filter engine
+│   │   ├── controllers/         # Admin, Coordinator, Student, Interview, Connect controllers
+│   │   ├── routes/              # Express API route modules
+│   │   └── server.js            # Express server (Port 5050)
+│   ├── uploads/                 # Uploaded resumes & batch CSVs
+│   ├── .env                     # Environment variables
+│   └── package.json
+├── API_CONTRACT.md              # Shared REST API specifications
+├── sample-students.csv          # Sample dataset for bulk import testing
 └── README.md                    # System documentation
 ```

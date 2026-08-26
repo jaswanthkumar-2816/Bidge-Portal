@@ -5,7 +5,12 @@
 window.app = (function () {
   let currentRole = 'coordinator'; // Default landing role: coordinator | admin | student
 
-  function init() {
+  async function init() {
+    // Check connection to live Backend REST API on Port 5050
+    if (window.bridgeApi && typeof window.bridgeApi.checkBackendHealth === 'function') {
+      await window.bridgeApi.checkBackendHealth();
+    }
+
     // Check URL parameters for deep links
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get('view');

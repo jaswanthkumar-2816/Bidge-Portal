@@ -889,6 +889,14 @@ window.coordinatorModule = (function () {
     // Update Opportunity state to SENT_TO_RECRUITER
     window.bridgeStore.updateOpportunityState(oppId, 'SENT_TO_RECRUITER');
 
+    // Also sync to live Backend REST API if online
+    if (window.bridgeApi && typeof window.bridgeApi.transmitShortlist === 'function') {
+      window.bridgeApi.transmitShortlist(oppId, {
+        studentIds: Array.from(selectedCandidateIds),
+        notes: notes
+      }).catch(err => console.warn('Backend sync deferred:', err));
+    }
+
     const count = selectedStudents.length;
     selectedCandidateIds.clear();
     closeModal('shortlist-review-modal');
