@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HIERO Bridge - Biomorphic Academia–Industry Placement Portal connecting verified final-year collegiate talent to industry opportunities created in HIERO Connect.">
+  <title>HIERO Bridge | Academia–Industry Placement Portal</title>
+  
+  <link rel="icon" type="image/png" href="assets/hiero-bridge-logo.png">
+
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Biomorphic Design System Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Left Navigation Sidebar -->
+    <aside class="sidebar">
+      <!-- Brand Header with Glowing Lotus Bridge Logo -->
+      <div class="brand-wrapper">
+        <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge Logo" class="brand-logo-img">
+        <div class="brand-text-block">
+          <div class="brand-title">HIERO <span>BRIDGE</span></div>
+          <span class="brand-subtitle">Academia Portal</span>
+        </div>
+      </div>
+
+      <!-- Role Selector Dropdown -->
+      <div class="role-picker">
+        <label for="role-select-input">Active Portal View</label>
+        <select id="role-select-input" class="role-select" onchange="app.switchRole(this.value)">
+          <option value="coordinator">Placement Coordinator</option>
+          <option value="admin">College Administrator</option>
+          <option value="student">Final-Year Student</option>
+        </select>
+      </div>
+
+      <!-- Navigation Menu Items -->
+      <ul class="nav-menu">
+        <li class="nav-item active" data-role="coordinator" onclick="app.switchRole('coordinator')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span>Placement Ops Hub</span>
+        </li>
+        <li class="nav-item" data-role="admin" onclick="app.switchRole('admin')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <span>College Admin Console</span>
+        </li>
+        <li class="nav-item" data-role="student" onclick="app.switchRole('student')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+          <span>Final-Year Student Gateway</span>
+        </li>
+        <li class="nav-item" onclick="connectSyncModule.openConnectSyncModal()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--primary);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          <span style="color: var(--primary);">HIERO Connect Simulator</span>
+        </li>
+      </ul>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="quick-btn-reset" onclick="app.resetAllData()">
+          ↺ Reset Default Demo Data
+        </button>
+        <div>HIERO Bridge Botanical v3.0</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <div class="current-institution">
+            <span class="inst-dot"></span>
+            <span id="header-inst-name">National Institute of Technology, Warangal</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="eco-pill" onclick="app.openEcosystemMapModal()">
+            🌿 Biomorphic Ecosystem Map
+          </button>
+
+          <div class="user-badge">
+            <div class="avatar" id="header-user-avatar">TP</div>
+            <div>
+              <div class="user-name" id="header-user-name">Dr. Ramesh Kulkarni (TPO)</div>
+            </div>
+            <span class="role-pill" id="header-role-pill">Placement Coordinator</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dynamic Role-Based View Containers -->
+      <main id="main-content-body">
+        <div id="coordinator-view-container"></div>
+        <div id="admin-view-container" style="display: none;"></div>
+        <div id="student-view-container" style="display: none;"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal and Drawer Mount Point -->
+  <div id="modal-root"></div>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Logic Modules -->
+  <script src="js/state.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/coordinator.js"></script>
+  <script src="js/student.js"></script>
+  <script src="js/interview.js"></script>
+  <script src="js/connect-sync.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
