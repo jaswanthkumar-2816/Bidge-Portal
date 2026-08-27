@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Application Portal — HIERO Bridge</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Core Design System -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="student-portal-body">
+  <!-- Interactive Cursor-Reactive Particle Constellation Canvas -->
+  <canvas id="network-canvas" class="network-bg-canvas"></canvas>
+
+  <!-- Dedicated Student Application Header -->
+  <header class="student-portal-header">
+    <div class="student-header-inner">
+      <div class="student-header-brand">
+        <div class="brand-logo-frame">
+          <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge Logo" class="brand-logo-img">
+        </div>
+        <div>
+          <div class="brand-title">HIERO <span>BRIDGE</span></div>
+          <div class="student-header-pill">STUDENT APPLICATION GATEWAY</div>
+        </div>
+      </div>
+
+      <div class="student-header-inst">
+        <div class="inst-icon-shield">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <div class="inst-text-block">
+          <span class="inst-eyebrow">ACCREDITED INSTITUTION</span>
+          <span class="inst-name">National Institute of Technology, Warangal</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="student-main-layout">
+    
+    <!-- ====================================================================
+         SCREEN 1: STUDENT DASHBOARD (OPPORTUNITY OVERVIEW & INVITATION)
+         ==================================================================== -->
+    <section id="student-dashboard-screen" class="student-screen active">
+      <div class="student-welcome-banner">
+        <div class="welcome-tag">✦ CANDIDATE INVITATION</div>
+        <h1 class="student-main-heading">Student Dashboard</h1>
+        <p class="student-subheading">
+          You have been invited to apply for an opportunity. Review the role details, criteria, and eligibility requirements below to begin your application.
+        </p>
+      </div>
+
+      <!-- Opportunity Showcase Card -->
+      <div class="opp-showcase-card">
+        <div class="showcase-card-header">
+          <div>
+            <div class="showcase-company" id="dash-opp-company">DATABRICKS</div>
+            <h2 class="showcase-title" id="dash-opp-title">Associate Software Engineer — Distributed Systems</h2>
+            <div class="showcase-meta-row">
+              <span class="meta-pill" id="dash-opp-location">📍 Bengaluru / Hyderabad</span>
+              <span class="meta-pill" id="dash-opp-workmode">💼 Hybrid</span>
+              <span class="meta-pill" id="dash-opp-batch">🎓 Batch 2022-2026</span>
+            </div>
+          </div>
+          <div class="showcase-badge-wrap">
+            <span class="badge-status-pill" id="dash-opp-status">Applications Open</span>
+          </div>
+        </div>
+
+        <!-- 4-Tile Criteria Matrix -->
+        <div class="criteria-matrix-grid">
+          <div class="matrix-tile">
+            <span class="matrix-label">MINIMUM CGPA</span>
+            <strong class="matrix-value text-neon-green" id="dash-opp-mincgpa">≥ 8.50</strong>
+            <span class="matrix-sub">Aggregated All Semesters</span>
+          </div>
+          <div class="matrix-tile">
+            <span class="matrix-label">ELIGIBLE DEPARTMENTS</span>
+            <strong class="matrix-value" id="dash-opp-depts">CSE, AIML, IT</strong>
+            <span class="matrix-sub">B.Tech Final Year Pool</span>
+          </div>
+          <div class="matrix-tile">
+            <span class="matrix-label">COMPENSATION</span>
+            <strong class="matrix-value text-cyan" id="dash-opp-ctc">₹28,00,000 – ₹34,00,000 PA</strong>
+            <span class="matrix-sub">Full-Time Placement Offer</span>
+          </div>
+          <div class="matrix-tile">
+            <span class="matrix-label">APPLICATION DEADLINE</span>
+            <strong class="matrix-value text-warning" id="dash-opp-deadline">2026-09-15</strong>
+            <span class="matrix-sub">Server Auto-Closes 23:59 IST</span>
+          </div>
+        </div>
+
+        <!-- Skills Section -->
+        <div class="showcase-section">
+          <div class="section-micro-label">REQUIRED & PREFERRED COMPETENCIES</div>
+          <div class="skills-pill-wrap" id="dash-opp-skills">
+            <!-- Dynamic Skills Rendered Here -->
+          </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="showcase-section">
+          <div class="section-micro-label">ROLE OVERVIEW & SPECIFICATIONS</div>
+          <p class="role-desc-text" id="dash-opp-desc">
+            Lead mission-critical distributed data storage engines, query processors, and cloud infrastructure pipelines. You will collaborate directly with global engineering leads to design resilient cloud architectures.
+          </p>
+        </div>
+
+        <!-- Prominent START APPLICATION Action -->
+        <div class="showcase-action-bar">
+          <div class="action-helper-text">
+            <span>Ready to submit your application? Make sure you have your university roll number and updated resume ready.</span>
+          </div>
+          <button id="btn-start-app" class="btn-start-application">
+            START APPLICATION →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 2: COMPLETE YOUR APPLICATION (DEDICATED APPLICATION FORM)
+         ==================================================================== -->
+    <section id="student-form-screen" class="student-screen">
+      <!-- Clear Student Journey Stepper -->
+      <div class="journey-stepper-bar">
+        <div class="journey-step completed">
+          <span class="step-circle">✓</span>
+          <span class="step-label">Opportunity Overview</span>
+        </div>
+        <div class="journey-divider active"></div>
+        <div class="journey-step active">
+          <span class="step-circle">2</span>
+          <span class="step-label">Complete Application</span>
+        </div>
+        <div class="journey-divider"></div>
+        <div class="journey-step">
+          <span class="step-circle">3</span>
+          <span class="step-label">Confirmation</span>
+        </div>
+      </div>
+
+      <!-- Form Heading -->
+      <div class="form-header-block">
+        <h1 class="student-main-heading">Complete Your Application</h1>
+        <p class="student-subheading">
+          Please provide your details to continue with your application for <strong id="form-opp-title-ref" class="text-neon-green">...</strong>
+        </p>
+      </div>
+
+      <!-- Application Form Card -->
+      <form id="student-application-form" class="application-form-card" novalidate>
+        
+        <!-- Opportunity Mini Recap Strip -->
+        <div class="opp-mini-recap">
+          <div class="recap-left">
+            <span class="recap-company" id="form-opp-company-ref">DATABRICKS</span>
+            <span class="recap-title" id="form-opp-role-ref">Associate Software Engineer — Distributed Systems</span>
+          </div>
+          <div class="recap-right">
+            <span class="recap-rule">Required CGPA: <strong id="form-opp-cutoff-ref" class="text-neon-green">≥ 8.50</strong></span>
+          </div>
+        </div>
+
+        <!-- Field 1: Full Name -->
+        <div class="form-group-spatial">
+          <label class="form-label-spatial" for="student-full-name">
+            Full Name <span class="required-star">*</span>
+          </label>
+          <div class="input-spatial-wrap">
+            <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <input type="text" id="student-full-name" class="form-input-spatial" placeholder="Enter your full name" required autocomplete="name">
+          </div>
+          <span class="field-error-msg" id="name-error">Please enter your full name.</span>
+        </div>
+
+        <!-- Field 2: Roll Number -->
+        <div class="form-group-spatial">
+          <label class="form-label-spatial" for="student-roll-number">
+            Roll Number <span class="required-star">*</span>
+          </label>
+          <div class="input-spatial-wrap">
+            <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+            </svg>
+            <input type="text" id="student-roll-number" class="form-input-spatial" placeholder="Enter your university roll number (e.g. 2022CSE045)" required autocomplete="off">
+          </div>
+          <span class="field-error-msg" id="roll-error">Please enter your valid university roll number.</span>
+        </div>
+
+        <!-- Field 3: Select Your Current Academic Year (Multi-Select Options) -->
+        <div class="form-group-spatial" id="academic-year-form-group">
+          <label class="form-label-spatial">
+            Select Your Current Academic Year <span class="required-star">*</span>
+            <span class="label-subtext">Select all options that apply to you.</span>
+          </label>
+
+          <div class="academic-year-cards-row">
+            <!-- 3rd Year Selection Card -->
+            <label class="apply-year-card" id="apply-year-card-3rd">
+              <input type="checkbox" name="academicYear" id="apply-chk-3rd" value="3rd Year" class="apply-year-checkbox">
+              <div class="apply-year-checkbox-indicator"></div>
+              <div class="apply-year-card-text">
+                <span class="apply-year-card-title">3rd Year</span>
+                <span class="apply-year-card-sub">Pre-Final Year Cohort • Batch 2023 – 2027</span>
+              </div>
+            </label>
+
+            <!-- Final Year Selection Card -->
+            <label class="apply-year-card" id="apply-year-card-final">
+              <input type="checkbox" name="academicYear" id="apply-chk-final" value="Final Year" class="apply-year-checkbox">
+              <div class="apply-year-checkbox-indicator"></div>
+              <div class="apply-year-card-text">
+                <span class="apply-year-card-title">Final Year</span>
+                <span class="apply-year-card-sub">Graduating Batch • Batch 2022 – 2026</span>
+              </div>
+            </label>
+          </div>
+          <span class="field-error-msg" id="year-error">Please select your current academic year.</span>
+        </div>
+
+        <!-- Field 4: Upload Resume (Premium Drag & Drop) -->
+        <div class="form-group-spatial">
+          <label class="form-label-spatial">
+            Upload Resume <span class="required-star">*</span>
+            <span class="label-subtext">PDF or DOCX • Maximum file size 10MB</span>
+          </label>
+          
+          <input type="file" id="resume-file-input" accept=".pdf,.docx,.doc" class="sr-only-input">
+          
+          <!-- Dropzone Container -->
+          <div id="resume-dropzone" class="resume-dropzone">
+            <!-- Idle Upload Prompt -->
+            <div id="dropzone-idle" class="dropzone-content">
+              <div class="dropzone-icon-circle">
+                <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+              </div>
+              <div class="dropzone-prompt">
+                <strong>Click to browse</strong> or drag and drop your resume here
+              </div>
+              <div class="dropzone-meta">Supports PDF, DOCX (Up to 10MB)</div>
+            </div>
+
+            <!-- Selected File Preview Bar -->
+            <div id="dropzone-selected" class="dropzone-selected-preview" style="display: none;">
+              <div class="file-preview-left">
+                <div class="file-doc-icon">📄</div>
+                <div>
+                  <div class="file-name" id="selected-file-name">resume.pdf</div>
+                  <div class="file-size" id="selected-file-size">1.2 MB • Ready for submission</div>
+                </div>
+              </div>
+              <button type="button" id="btn-remove-resume" class="btn-remove-file" title="Remove file">
+                ✕ Remove
+              </button>
+            </div>
+          </div>
+          <span class="field-error-msg" id="resume-error">Please attach your resume (PDF or DOCX format).</span>
+        </div>
+
+        <!-- Field 4: CGPA Selection (Interactive Animated Clearly Marked Scale) -->
+        <div class="form-group-spatial">
+          <div class="cgpa-field-header">
+            <div>
+              <label class="form-label-spatial" style="margin-bottom: 2px;">
+                Cumulative Grade Point Average (CGPA) <span class="required-star">*</span>
+              </label>
+              <span class="label-subtext">Drag the interactive slider to accurately set your verified CGPA.</span>
+            </div>
+            
+            <!-- Prominent Live Display Hero -->
+            <div class="cgpa-display-hero">
+              <div class="cgpa-display-number" id="cgpa-hero-number">8.50</div>
+              <div class="cgpa-display-label">Your CGPA</div>
+            </div>
+          </div>
+
+          <!-- Interactive CGPA Slider Container -->
+          <div class="cgpa-scale-wrapper">
+            <div class="slider-track-container">
+              <input type="range" id="cgpa-range-slider" min="0.0" max="10.0" step="0.05" value="8.50" class="spatial-cgpa-slider">
+              <!-- Threshold Line Marker (Positioned dynamically) -->
+              <div id="cgpa-threshold-line" class="cgpa-threshold-line" title="Minimum Requirement Threshold">
+                <span class="threshold-tag" id="cgpa-threshold-tag">Req: 8.50</span>
+              </div>
+            </div>
+
+            <!-- Visible Numeric Scale Ticks: 0.0 - 10.0 -->
+            <div class="cgpa-scale-ticks">
+              <span class="cgpa-tick" data-val="0.0">0.0</span>
+              <span class="cgpa-tick" data-val="1.0">1.0</span>
+              <span class="cgpa-tick" data-val="2.0">2.0</span>
+              <span class="cgpa-tick" data-val="3.0">3.0</span>
+              <span class="cgpa-tick" data-val="4.0">4.0</span>
+              <span class="cgpa-tick" data-val="5.0">5.0</span>
+              <span class="cgpa-tick" data-val="6.0">6.0</span>
+              <span class="cgpa-tick" data-val="7.0">7.0</span>
+              <span class="cgpa-tick" data-val="8.0">8.0</span>
+              <span class="cgpa-tick" data-val="9.0">9.0</span>
+              <span class="cgpa-tick" data-val="10.0">10.0</span>
+            </div>
+          </div>
+
+          <!-- Intelligent Live Eligibility Feedback Box -->
+          <div id="cgpa-eligibility-box" class="eligibility-feedback-card eligible">
+            <div class="eligibility-icon-wrap" id="eligibility-icon">
+              ✓
+            </div>
+            <div class="eligibility-content">
+              <div class="eligibility-title" id="eligibility-status-title">Eligible for Application</div>
+              <div class="eligibility-desc" id="eligibility-status-desc">
+                Your CGPA meets the minimum requirement of ≥ 8.50 for this opportunity.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Navigation Actions -->
+        <div class="form-navigation-actions">
+          <button type="button" id="btn-back-to-dash" class="btn-form-back">
+            ← Back to Overview
+          </button>
+          <button type="submit" id="btn-submit-app" class="btn-form-submit">
+            Submit Application →
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ====================================================================
+         SCREEN 3: SUBMISSION CONFIRMATION (CELEBRATION & RECEIPT)
+         ==================================================================== -->
+    <section id="student-success-screen" class="student-screen">
+      <div class="success-confirmation-card">
+        <div class="success-icon-glow-ring">
+          <div class="success-icon-inner">
+            <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="success-badge">APPLICATION REGISTERED</div>
+        <h1 class="success-title">Application Submitted Successfully!</h1>
+        <p class="success-sub">
+          Your application for <strong id="success-opp-title">...</strong> at <strong id="success-opp-company">...</strong> has been received by the Placement Office and logged in the HIERO Bridge system.
+        </p>
+
+        <!-- Official Application Receipt -->
+        <div class="receipt-box">
+          <div class="receipt-row">
+            <span class="receipt-label">Application Reference ID</span>
+            <span class="receipt-value text-neon-green" id="success-app-id">APP-2026-XXXX</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Candidate Name</span>
+            <span class="receipt-value" id="success-candidate-name">...</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Roll Number</span>
+            <span class="receipt-value" id="success-candidate-roll">...</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Academic Year</span>
+            <span class="receipt-value text-neon-green" id="success-candidate-year">3rd Year</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Submitted CGPA</span>
+            <span class="receipt-value text-neon-green" id="success-candidate-cgpa">8.50 / 10.0</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Attached Resume</span>
+            <span class="receipt-value" id="success-candidate-resume">resume.pdf</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Pipeline Status</span>
+            <span class="receipt-value text-cyan">Pending Coordinator Review • Synced with HIERO Connect</span>
+          </div>
+        </div>
+
+        <div class="success-action-wrap">
+          <button id="btn-success-done" class="btn-start-application" style="width: auto; padding: 12px 32px;">
+            Return to Student Dashboard
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Core Scripts -->
+  <script src="js/state.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/apply.js"></script>
+</body>
+</html>

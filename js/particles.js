@@ -1,120 +1,175 @@
 /**
- * HIERO Antigravity Neural Particle Canvas Engine
- * Interactive bioluminescent constellation background
+ * HIERO Bridge — Subtle Neural Constellation Particle Network
+ * Exact Original Hiero Bridge Style: Deep black, subtle green animated dots, thin network connections, low-opacity ambient effects only.
  */
 
 (function () {
-  function initParticleCanvas() {
-    const canvas = document.getElementById('antigravity-bg');
+  'use strict';
+
+  function initNetworkCanvas() {
+    const canvas = document.getElementById('network-canvas') || document.getElementById('antigravity-bg');
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     let particles = [];
-    const mouse = { x: -1000, y: -1000, radius: 200 };
+    let animationFrameId = null;
 
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
+    // Detect touch-only / mobile devices
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 768);
 
-    window.addEventListener('mouseleave', () => {
-      mouse.x = -1000;
-      mouse.y = -1000;
-    });
+    // Cursor tracking state
+    const mouse = {
+      x: -9999,
+      y: -9999,
+      radius: 140, // Repulsion influence radius
+      isActive: false
+    };
+
+    if (!isTouchDevice) {
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.isActive = true;
+      });
+
+      window.addEventListener('mouseleave', () => {
+        mouse.x = -9999;
+        mouse.y = -9999;
+        mouse.isActive = false;
+      });
+    }
 
     function resize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      initParticles();
+      buildParticles();
     }
 
-    class Particle {
+    class NetworkParticle {
       constructor() {
-        this.init();
+        this.reset(true);
       }
 
-      init() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.baseX = this.x;
-        this.baseY = this.y;
-        this.size = Math.random() * 2 + 1;
+      reset(randomizePos = false) {
+        this.x = randomizePos ? Math.random() * canvas.width : (Math.random() < 0.5 ? 0 : canvas.width);
+        this.y = randomizePos ? Math.random() * canvas.height : Math.random() * canvas.height;
+
+        // Ambient drift: subtle, slow, natural float
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.15 + Math.random() * 0.25; // 0.15 - 0.40 px/frame
+        this.ambientVx = Math.cos(angle) * speed;
+        this.ambientVy = Math.sin(angle) * speed;
+
+        this.vx = this.ambientVx;
+        this.vy = this.ambientVy;
+
+        // Subtle dot sizing (1.0 to 1.9 px)
+        this.size = Math.random() < 0.1 ? 1.9 : (1.0 + Math.random() * 0.6);
         this.baseSize = this.size;
-        this.density = Math.random() * 25 + 10;
-        this.opacity = Math.random() * 0.45 + 0.25;
-        this.velocity = (Math.random() - 0.5) * 0.4;
+
+        // Low-opacity subtle alpha (0.20 to 0.45)
+        this.baseAlpha = 0.20 + Math.random() * 0.25;
+        this.alpha = this.baseAlpha;
+        this.glow = 0;
+        this.mass = 1.0 + Math.random() * 0.5;
+      }
+
+      update() {
+        // 1. Cursor Repulsion Physics (smooth, subtle inverse-distance repulsion)
+        if (!isTouchDevice && mouse.isActive) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < mouse.radius && dist > 0.1) {
+            const norm = (mouse.radius - dist) / mouse.radius;
+            const force = (norm * norm * 1.4) / this.mass;
+
+            const dirX = dx / dist;
+            const dirY = dy / dist;
+
+            this.vx += dirX * force * 0.45;
+            this.vy += dirY * force * 0.45;
+
+            this.glow = Math.min(0.4, this.glow + norm * 0.25);
+          }
+        }
+
+        // 2. Physics Damping (smooth decelerating drag)
+        this.vx *= 0.95;
+        this.vy *= 0.95;
+
+        // 3. Smooth restoration to ambient drift
+        this.vx += (this.ambientVx - this.vx) * 0.035;
+        this.vy += (this.ambientVy - this.vy) * 0.035;
+
+        // 4. Glow relaxation
+        this.glow *= 0.94;
+
+        // 5. Update position
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // 6. Smooth wrap-around screen boundaries
+        const margin = 15;
+        if (this.x < -margin) this.x = canvas.width + margin;
+        if (this.x > canvas.width + margin) this.x = -margin;
+        if (this.y < -margin) this.y = canvas.height + margin;
+        if (this.y > canvas.height + margin) this.y = -margin;
       }
 
       draw() {
-        ctx.fillStyle = `rgba(7, 226, 25, ${this.opacity})`;
+        // Crisp, subtle dot without any giant radial-gradient halos
+        const currentAlpha = Math.min(0.65, this.baseAlpha + this.glow);
+        ctx.fillStyle = `rgba(7, 226, 25, ${currentAlpha})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
       }
-
-      update() {
-        this.baseX += this.velocity;
-        this.baseY += this.velocity;
-
-        if (this.baseX > canvas.width) this.baseX = 0;
-        if (this.baseX < 0) this.baseX = canvas.width;
-        if (this.baseY > canvas.height) this.baseY = 0;
-        if (this.baseY < 0) this.baseY = canvas.height;
-
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < mouse.radius) {
-          let force = (mouse.radius - distance) / mouse.radius;
-          let dirX = dx / distance;
-          let dirY = dy / distance;
-
-          this.x -= dirX * force * this.density;
-          this.y -= dirY * force * this.density;
-          this.size = this.baseSize * (1 + force * 1.6);
-        } else {
-          this.x += (this.baseX - this.x) * 0.05;
-          this.y += (this.baseY - this.y) * 0.05;
-          this.size = this.baseSize;
-        }
-      }
     }
 
-    function initParticles() {
+    function buildParticles() {
       particles = [];
-      let count = Math.floor((canvas.width * canvas.height) / 9500);
-      count = Math.min(180, Math.max(60, count));
+      let count = Math.floor((canvas.width * canvas.height) / 14000);
+      count = Math.min(130, Math.max(45, count));
+
       for (let i = 0; i < count; i++) {
-        particles.push(new Particle());
+        particles.push(new NetworkParticle());
       }
     }
 
-    function connect() {
-      for (let a = 0; a < particles.length; a++) {
-        for (let b = a + 1; b < particles.length; b++) {
-          let dx = particles[a].x - particles[b].x;
-          let dy = particles[a].y - particles[b].y;
-          let distSq = dx * dx + dy * dy;
+    function drawConnections() {
+      const maxDistance = 110;
+      const maxDistSq = maxDistance * maxDistance;
 
-          if (distSq < 13000) {
-            let distance = Math.sqrt(distSq);
-            let opacity = 1 - distance / 114;
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distSq = dx * dx + dy * dy;
 
-            let mDx = mouse.x - (particles[a].x + particles[b].x) / 2;
-            let mDy = mouse.y - (particles[a].y + particles[b].y) / 2;
-            let mDist = Math.sqrt(mDx * mDx + mDy * mDy);
+          if (distSq < maxDistSq) {
+            const dist = Math.sqrt(distSq);
+            const factor = 1 - dist / maxDistance;
+
+            // Thin, low-opacity subtle lines
+            let alpha = factor * 0.12;
+
+            const combinedGlow = Math.max(p1.glow, p2.glow);
+            if (combinedGlow > 0.05) {
+              alpha = factor * (0.12 + combinedGlow * 0.18);
+              ctx.strokeStyle = `rgba(7, 226, 25, ${alpha})`;
+              ctx.lineWidth = 0.8;
+            } else {
+              ctx.strokeStyle = `rgba(7, 226, 25, ${alpha})`;
+              ctx.lineWidth = 0.6;
+            }
 
             ctx.beginPath();
-            if (mDist < 120) {
-              let mForce = 1 - mDist / 120;
-              ctx.strokeStyle = `rgba(120, 255, 140, ${opacity * (0.3 + mForce * 0.7)})`;
-            } else {
-              ctx.strokeStyle = `rgba(7, 226, 25, ${opacity * 0.16})`;
-            }
-            ctx.lineWidth = 1;
-            ctx.moveTo(particles[a].x, particles[a].y);
-            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
             ctx.stroke();
           }
         }
@@ -123,22 +178,30 @@
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw thin lines first
+      drawConnections();
+
+      // Update and draw subtle dots
       for (let i = 0; i < particles.length; i++) {
         particles[i].update();
         particles[i].draw();
       }
-      connect();
-      requestAnimationFrame(animate);
+
+      animationFrameId = requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', () => {
+      resize();
+    });
+
     resize();
     animate();
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initParticleCanvas);
+    document.addEventListener('DOMContentLoaded', initNetworkCanvas);
   } else {
-    initParticleCanvas();
+    initNetworkCanvas();
   }
 })();

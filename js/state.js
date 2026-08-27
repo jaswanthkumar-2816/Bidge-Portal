@@ -198,9 +198,52 @@ const DEFAULT_STATE = {
       ],
       certifications: ['Web Development Fundamentals - Coursera'],
       resumeUrl: 'https://hiero.io/resumes/pooja-nair-2026.pdf',
+      resumeFileName: 'pooja-nair-2026.pdf',
       placementStatus: 'Active',
       verificationStatus: 'Verified',
       avatar: 'PN'
+    },
+    {
+      id: 'STU-009',
+      regNo: '2022CSE092',
+      name: 'Rahul Kumar',
+      department: 'CSE',
+      academicYear: '2022-2026',
+      cgpa: 7.50,
+      email: 'rahul.kumar@college.edu',
+      phone: '+91-9876543218',
+      skills: ['JavaScript', 'React', 'Node.js', 'Express', 'MongoDB'],
+      projectCount: 2,
+      projects: [
+        { title: 'Hostel Facilities & Feedback Portal', tech: 'React, Node.js, Express, MongoDB', link: '#' }
+      ],
+      certifications: ['Full Stack Web Development'],
+      resumeUrl: 'https://hiero.io/resumes/rahul-kumar-2026.pdf',
+      resumeFileName: 'rahul-kumar-2026.pdf',
+      placementStatus: 'Active',
+      verificationStatus: 'Verified',
+      avatar: 'RK'
+    },
+    {
+      id: 'STU-010',
+      regNo: '2023CSE015',
+      name: 'Priya Singh',
+      department: 'CSE',
+      academicYear: '2023-2027 (3rd Year)',
+      cgpa: 8.70,
+      email: 'priya.singh@college.edu',
+      phone: '+91-9876543219',
+      skills: ['C++', 'Python', 'Algorithms', 'Data Structures', 'Linux'],
+      projectCount: 2,
+      projects: [
+        { title: 'Graph Visualizer & Shortest Path Engine', tech: 'C++, SFML, Graph Algorithms', link: '#' }
+      ],
+      certifications: ['Competitive Programming Specialist'],
+      resumeUrl: 'https://hiero.io/resumes/priya-singh-2027.pdf',
+      resumeFileName: 'priya-singh-2027.pdf',
+      placementStatus: 'Active',
+      verificationStatus: 'Verified',
+      avatar: 'PS'
     }
   ],
 
@@ -406,13 +449,37 @@ class BridgeStore {
     this.listeners = [];
     this.activeStudentId = 'STU-001';
     this.state = this.loadState();
+
+    // Listen for storage events across browser tabs/windows for immediate sync
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY && e.newValue) {
+          try {
+            this.state = JSON.parse(e.newValue);
+            this.notify();
+          } catch (err) {
+            console.error('Failed to parse updated state from storage event:', err);
+          }
+        }
+      });
+    }
   }
 
   loadState() {
     try {
       const serialized = localStorage.getItem(STORAGE_KEY);
       if (serialized) {
-        return JSON.parse(serialized);
+        const loaded = JSON.parse(serialized);
+        // Ensure default seed students exist in loaded state if not already present
+        if (loaded && Array.isArray(loaded.students)) {
+          DEFAULT_STATE.students.forEach(defaultStudent => {
+            const exists = loaded.students.some(s => s.regNo === defaultStudent.regNo);
+            if (!exists) {
+              loaded.students.push(defaultStudent);
+            }
+          });
+        }
+        return loaded;
       }
     } catch (e) {
       console.warn('Could not read state from localStorage, initializing defaults:', e);
@@ -550,6 +617,185 @@ class BridgeStore {
 
   getApplicationsByStudent(studentId) {
     return (this.state.applications || []).filter(a => a.studentId === studentId);
+  }
+
+  // === Unified Application Submission & Student Pool Synchronization Engine ===
+  recordStudentApplication(data) {
+    if (!data || !data.rollNo) {
+      return { success: false, message: 'Invalid application submission data: Roll number is required.' };
+    }
+
+    const normRoll = String(data.rollNo).trim();
+    const normName = String(data.name || '').trim();
+    const subTime = new Date().toISOString();
+    const resumeFileName = data.resumeFileName || 'resume.pdf';
+    const resumeUrl = data.resumeUrl || `https://hiero.io/resumes/${encodeURIComponent(resumeFileName)}`;
+    const oppId = data.oppId;
+    const opp = this.getOpportunityById(oppId);
+    const oppTitle = data.oppTitle || (opp ? opp.title : 'Software Engineer');
+    const company = data.company || (opp ? opp.company : 'Industry Partner');
+    const fullOppTitle = `${company} - ${oppTitle}`;
+    const cgpaNum = parseFloat(data.cgpa) || 8.0;
+    const academicYearVal = data.academicYear || (Array.isArray(data.academicYears) ? data.academicYears.join(', ') : null);
+
+    // Ensure array integrity
+    if (!Array.isArray(this.state.students)) {
+      this.state.students = [];
+    }
+    if (!Array.isArray(this.state.applications)) {
+      this.state.applications = [];
+    }
+
+    // 1. Check if student already exists using Roll Number / Registration Number as unique key
+    let student = this.state.students.find(s => 
+      s.regNo && s.regNo.trim().toLowerCase() === normRoll.toLowerCase()
+    );
+
+    // Fallback search by Student ID or exact Name
+    if (!student) {
+      student = this.state.students.find(s => 
+        s.id && s.id.trim().toLowerCase() === normRoll.toLowerCase()
+      );
+    }
+    if (!student && normName) {
+      student = this.state.students.find(s => 
+        s.name && s.name.trim().toLowerCase() === normName.toLowerCase()
+      );
+    }
+
+    if (student) {
+      // Update existing student record without creating duplicates
+      student.cgpa = cgpaNum;
+      if (academicYearVal) {
+        student.academicYear = academicYearVal;
+      }
+      student.resumeUrl = resumeUrl;
+      student.resumeFileName = resumeFileName;
+      student.resumeUploadedAt = subTime;
+      student.appliedOpportunityId = oppId;
+      student.appliedOpportunityTitle = fullOppTitle;
+      student.applicationStatus = 'Applied';
+      student.lastAppliedAt = subTime;
+
+      if (!Array.isArray(student.applications)) {
+        student.applications = [];
+      }
+      const existingAppIdx = student.applications.findIndex(a => a.oppId === oppId);
+      const appRecord = {
+        oppId,
+        oppTitle,
+        company,
+        status: 'Applied',
+        appliedAt: subTime,
+        resumeFileName,
+        resumeUrl,
+        cgpa: cgpaNum,
+        academicYear: academicYearVal || student.academicYear
+      };
+      if (existingAppIdx !== -1) {
+        student.applications[existingAppIdx] = { ...student.applications[existingAppIdx], ...appRecord };
+      } else {
+        student.applications.push(appRecord);
+      }
+    } else {
+      // Determine department from Roll Number (e.g. 2022CSE045 -> CSE)
+      let deptCode = 'CSE';
+      const upperRoll = normRoll.toUpperCase();
+      if (upperRoll.includes('AIML')) deptCode = 'AIML';
+      else if (upperRoll.includes('CSE')) deptCode = 'CSE';
+      else if (upperRoll.includes('IT')) deptCode = 'IT';
+      else if (upperRoll.includes('ECE')) deptCode = 'ECE';
+      else if (upperRoll.includes('MECH')) deptCode = 'MECH';
+      else if (opp && opp.eligibleDepts && opp.eligibleDepts.length > 0) {
+        deptCode = opp.eligibleDepts[0];
+      }
+
+      student = {
+        id: 'STU-' + String(Date.now()).slice(-4),
+        regNo: normRoll,
+        name: normName,
+        department: deptCode,
+        academicYear: academicYearVal || (opp && opp.academicYear) || (this.state.college && this.state.college.currentBatch) || '2022-2026',
+        cgpa: cgpaNum,
+        email: `${normName.toLowerCase().replace(/[^a-z0-9]/g, '.')}@college.edu`,
+        phone: '+91-9876543299',
+        skills: opp && opp.requiredSkills ? [...opp.requiredSkills] : ['Problem Solving', 'Data Structures', 'Python'],
+        projectCount: 1,
+        projects: [
+          { title: `${oppTitle} Verified Application`, tech: 'Student Gateway Direct Application', link: '#' }
+        ],
+        certifications: ['Student Gateway Verified Candidate'],
+        resumeUrl: resumeUrl,
+        resumeFileName: resumeFileName,
+        resumeUploadedAt: subTime,
+        placementStatus: 'Active',
+        verificationStatus: 'Verified',
+        appliedOpportunityId: oppId,
+        appliedOpportunityTitle: fullOppTitle,
+        applicationStatus: 'Applied',
+        lastAppliedAt: subTime,
+        avatar: normName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'ST',
+        applications: [
+          {
+            oppId,
+            oppTitle,
+            company,
+            status: 'Applied',
+            appliedAt: subTime,
+            resumeFileName,
+            resumeUrl,
+            cgpa: cgpaNum,
+            academicYear: academicYearVal || 'Final Year'
+          }
+        ]
+      };
+      this.state.students.push(student);
+    }
+
+    // 2. Update or add central application entry in this.state.applications
+    let app = this.state.applications.find(a => 
+      a.oppId === oppId && (a.studentId === student.id || (a.studentRoll && a.studentRoll.toLowerCase() === normRoll.toLowerCase()))
+    );
+
+    if (app) {
+      app.appliedAt = subTime;
+      app.resumeUrl = resumeUrl;
+      app.resumeFileName = resumeFileName;
+      app.cgpa = cgpaNum;
+      app.status = 'Applied';
+      app.studentName = student.name;
+      app.studentRoll = student.regNo;
+      app.academicYear = academicYearVal || student.academicYear;
+      app.coordinatorNotes = `Verified Student Portal submission by ${student.name} (${student.regNo}) with CGPA ${cgpaNum.toFixed(2)} [${academicYearVal || student.academicYear}]`;
+    } else {
+      app = {
+        id: 'APP-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000),
+        oppId: oppId,
+        oppTitle: fullOppTitle,
+        studentId: student.id,
+        studentName: student.name,
+        studentRoll: student.regNo,
+        academicYear: academicYearVal || student.academicYear,
+        appliedAt: subTime,
+        resumeUrl: resumeUrl,
+        resumeFileName: resumeFileName,
+        cgpa: cgpaNum,
+        status: 'Applied',
+        coordinatorNotes: `Verified Student Portal submission by ${student.name} (${student.regNo}) with CGPA ${cgpaNum.toFixed(2)}`,
+        recruiterFeedback: null,
+        interviewResult: null
+      };
+      this.state.applications.push(app);
+    }
+
+    // 3. Persist updated state to localStorage and broadcast to active subscribers
+    this.saveState();
+
+    return {
+      success: true,
+      student,
+      application: app
+    };
   }
 
   submitApplication(data) {

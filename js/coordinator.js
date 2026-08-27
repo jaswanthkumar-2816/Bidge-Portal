@@ -43,8 +43,8 @@ window.coordinatorModule = (function () {
       <div class="page-container">
         <!-- Spatial Hero Header -->
         <div class="spatial-hero-banner">
-          <div class="hero-tag">ENTERPRISE TALENT CONTROL CENTER</div>
-          <h1 class="hero-title">Placement Operations <span>Command Hub</span></h1>
+          <div class="hero-tag">✦ ENTERPRISE TALENT CONTROL CENTER</div>
+          <h1 class="hero-title">Placement Operations <span class="text-neon-green">Command Hub</span></h1>
           <p class="hero-desc">
             Orchestrate verified candidate pools, live recruiter-expectation screening filters, and bi-directional candidate pipeline transmission with HIERO Connect.
           </p>
@@ -283,66 +283,204 @@ window.coordinatorModule = (function () {
     const opp = window.bridgeStore.getOpportunityById(oppId);
     if (!opp) return;
 
-    const fullUrl = `${window.location.origin}${window.location.pathname}?view=apply&oppId=${opp.id}`;
+    const fullUrl = `${window.location.origin}/?view=apply&oppId=${opp.id}`;
 
     const modalHtml = `
       <div class="modal-backdrop open" id="link-modal">
-        <div class="modal-content" style="max-width: 580px; text-align: center;">
-          <button class="modal-close" onclick="coordinatorModule.closeModal('link-modal')">✕</button>
+        <div class="modal-content link-modal-content">
+          <button class="modal-close" onclick="coordinatorModule.closeModal('link-modal')" title="Close dialog">✕</button>
           
-          <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(93, 93, 255, 0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
-            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          <!-- Modal Top Section -->
+          <div class="link-modal-top">
+            <div class="link-modal-icon-badge">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="link-modal-heading">Opportunity Application Link <span class="text-neon-green">Generated</span></h2>
+              <p class="link-modal-subheading">Share this secure application gateway with eligible final-year students.</p>
+            </div>
           </div>
 
-          <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.35rem;">Opportunity Application Link Generated</h2>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
-            Share this verified application gateway with eligible final-year students for <strong>${opp.company} - ${opp.title}</strong>
-          </p>
-
-          <!-- Eligibility Rules Bound to Link -->
-          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; text-align: left; margin-bottom: 1.25rem; font-size: 0.8rem;">
-            <div style="font-weight: 700; color: #fff; margin-bottom: 0.35rem;">🔒 Enforced Link Eligibility Rules:</div>
-            <div>• Minimum CGPA: <strong style="color: var(--success);">${opp.minCGPA.toFixed(2)}</strong></div>
-            <div>• Eligible Departments: <strong>${opp.eligibleDepts.join(', ')}</strong></div>
-            <div>• Academic Batch: <strong>${opp.academicYear || '2022-2026'}</strong></div>
-            <div>• Application Deadline: <strong style="color: var(--warning);">${opp.deadline}</strong></div>
+          <!-- Opportunity Information Summary Banner -->
+          <div class="link-modal-opp-banner">
+            <div class="modal-opp-left">
+              <div class="modal-opp-badge">${opp.company}</div>
+              <div class="modal-opp-title">${opp.title}</div>
+              <div class="modal-opp-meta">
+                <span>📍 ${opp.location || 'Bengaluru / Hyderabad'}</span>
+                <span>•</span>
+                <span>💼 ${opp.workMode || 'Hybrid'}</span>
+                <span>•</span>
+                <span>🎓 Batch ${opp.academicYear || '2022 – 2026'}</span>
+              </div>
+            </div>
+            <div class="modal-opp-right">
+              <span class="modal-opp-id-pill">ID: ${opp.id}</span>
+              <span class="modal-opp-status-pill">● Verified Gateway</span>
+            </div>
           </div>
 
-          <!-- URL Display Box -->
-          <div style="display: flex; gap: 8px; margin-bottom: 1.5rem;">
-            <input type="text" id="generated-url-input" class="form-control" value="${fullUrl}" readonly style="font-family: monospace; font-size: 0.8rem; background: rgba(0,0,0,0.4);">
-            <button class="btn btn-primary" onclick="coordinatorModule.copyLinkToClipboard()">
-              📋 Copy
+          <!-- Two-Column Main Content Grid -->
+          <div class="link-modal-grid">
+            
+            <!-- LEFT COLUMN: Application Link & Eligibility -->
+            <div class="link-modal-left-col">
+              
+              <!-- Secure Application Link Box -->
+              <div class="modal-subcard">
+                <label class="modal-subcard-label" for="generated-url-input">
+                  <span class="label-dot"></span> SECURE STUDENT APPLICATION LINK
+                </label>
+                <div class="modal-url-input-wrap">
+                  <span class="url-prefix-icon">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                    </svg>
+                  </span>
+                  <input type="text" id="generated-url-input" class="modal-url-input" value="${fullUrl}" readonly spellcheck="false">
+                  <button id="btn-modal-copy-link" class="btn-modal-copy" onclick="coordinatorModule.copyLinkToClipboard()" title="Copy link to clipboard">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    COPY LINK
+                  </button>
+                </div>
+                <div class="modal-url-helper">
+                  Anyone with this link can access the student application portal and apply.
+                </div>
+              </div>
+
+              <!-- Enforced Eligibility Requirements Box -->
+              <div class="modal-subcard">
+                <div class="modal-subcard-header">
+                  <span class="modal-subcard-title">🔒 Enforced Link Eligibility Rules</span>
+                  <span class="modal-rule-tag">Auto-Enforced</span>
+                </div>
+
+                <div class="modal-criteria-grid">
+                  <div class="modal-criteria-item">
+                    <span class="crit-label">Minimum CGPA</span>
+                    <span class="crit-val text-neon-green">≥ ${opp.minCGPA.toFixed(2)}</span>
+                  </div>
+                  <div class="modal-criteria-item">
+                    <span class="crit-label">Eligible Depts</span>
+                    <span class="crit-val">${opp.eligibleDepts.join(', ')}</span>
+                  </div>
+                  <div class="modal-criteria-item">
+                    <span class="crit-label">Academic Batch</span>
+                    <span class="crit-val">${opp.academicYear || '2022 – 2026'}</span>
+                  </div>
+                  <div class="modal-criteria-item">
+                    <span class="crit-label">Application Deadline</span>
+                    <span class="crit-val text-warning">${opp.deadline}</span>
+                  </div>
+                </div>
+
+                <div class="modal-meta-pills-row">
+                  <div class="meta-micro-pill">
+                    <span class="pill-icon text-neon-green">🔗</span>
+                    <span><strong>Link Type:</strong> Verified Gateway</span>
+                  </div>
+                  <div class="meta-micro-pill">
+                    <span class="pill-icon text-cyan">👥</span>
+                    <span><strong>Eligible:</strong> Final-Year Students</span>
+                  </div>
+                  <div class="meta-micro-pill">
+                    <span class="pill-icon text-neon-green">🛡️</span>
+                    <span><strong>Secure & Verified:</strong> Policy Active</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: QR CODE -->
+            <div class="link-modal-right-col">
+              <div class="qr-access-card">
+                <div class="qr-card-header">
+                  <div class="qr-card-title">Scan to Apply</div>
+                  <div class="qr-card-sub">Students can scan this QR code to open the application link instantly.</div>
+                </div>
+
+                <div class="qr-code-presentation-box">
+                  <!-- Futuristic Scan Corner Markers -->
+                  <span class="qr-corner qr-top-left"></span>
+                  <span class="qr-corner qr-top-right"></span>
+                  <span class="qr-corner qr-bottom-left"></span>
+                  <span class="qr-corner qr-bottom-right"></span>
+                  
+                  <!-- QR Frame -->
+                  <div class="qr-frame">
+                    <img 
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(fullUrl)}&bgcolor=ffffff&color=050805&margin=6" 
+                      alt="Scan to Apply QR Code" 
+                      class="qr-code-img"
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                    >
+                    <!-- High-Fidelity SVG Fallback -->
+                    <svg viewBox="0 0 100 100" class="qr-code-svg-fallback" style="display: none;">
+                      <rect x="0" y="0" width="100" height="100" fill="#ffffff"/>
+                      <rect x="6" y="6" width="28" height="28" fill="#050805"/>
+                      <rect x="11" y="11" width="18" height="18" fill="#ffffff"/>
+                      <rect x="15" y="15" width="10" height="10" fill="#050805"/>
+                      
+                      <rect x="66" y="6" width="28" height="28" fill="#050805"/>
+                      <rect x="71" y="11" width="18" height="18" fill="#ffffff"/>
+                      <rect x="75" y="15" width="10" height="10" fill="#050805"/>
+                      
+                      <rect x="6" y="66" width="28" height="28" fill="#050805"/>
+                      <rect x="11" y="71" width="18" height="18" fill="#ffffff"/>
+                      <rect x="15" y="75" width="10" height="10" fill="#050805"/>
+                      
+                      <rect x="38" y="10" width="8" height="24" fill="#050805"/>
+                      <rect x="50" y="18" width="12" height="8" fill="#050805"/>
+                      <rect x="38" y="42" width="24" height="8" fill="#050805"/>
+                      <rect x="10" y="42" width="20" height="8" fill="#050805"/>
+                      <rect x="70" y="42" width="20" height="8" fill="#050805"/>
+                      <rect x="42" y="58" width="16" height="16" fill="#050805"/>
+                      <rect x="66" y="58" width="24" height="10" fill="#050805"/>
+                      <rect x="70" y="76" width="20" height="14" fill="#050805"/>
+                      <rect x="42" y="82" width="18" height="8" fill="#050805"/>
+                    </svg>
+                  </div>
+                  <!-- Subtle Ambient Scan Line Animation -->
+                  <div class="qr-scan-line"></div>
+                </div>
+
+                <div class="qr-card-footer-info">
+                  <div class="qr-info-item">
+                    <span class="qr-info-icon">⚡</span>
+                    <span>Instant Mobile Direct</span>
+                  </div>
+                  <div class="qr-info-item">
+                    <span class="qr-info-icon">⏱️</span>
+                    <span>Expires: ${opp.deadline} • 11:59 PM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Footer Bar -->
+          <div class="link-modal-footer">
+            <button class="btn-modal-secondary" onclick="coordinatorModule.openStudentPreview('${opp.id}')">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              OPEN STUDENT VIEW
+            </button>
+            <button class="btn-modal-primary" onclick="coordinatorModule.broadcastToBatch('${opp.id}')">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              PUSH NOTIFICATION TO ELIGIBLE BATCH
             </button>
           </div>
 
-          <!-- QR Code Preview Representation -->
-          <div style="background: #fff; width: 140px; height: 140px; margin: 0 auto 1.5rem; border-radius: var(--radius-md); padding: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(255,255,255,0.1);">
-            <svg viewBox="0 0 100 100" width="120" height="120">
-              <rect x="0" y="0" width="30" height="30" fill="#07070c"/>
-              <rect x="5" y="5" width="20" height="20" fill="#fff"/>
-              <rect x="10" y="10" width="10" height="10" fill="#07070c"/>
-              <rect x="70" y="0" width="30" height="30" fill="#07070c"/>
-              <rect x="75" y="5" width="20" height="20" fill="#fff"/>
-              <rect x="80" y="10" width="10" height="10" fill="#07070c"/>
-              <rect x="0" y="70" width="30" height="30" fill="#07070c"/>
-              <rect x="5" y="75" width="20" height="20" fill="#fff"/>
-              <rect x="10" y="80" width="10" height="10" fill="#07070c"/>
-              <rect x="40" y="10" width="10" height="30" fill="#07070c"/>
-              <rect x="60" y="40" width="30" height="10" fill="#07070c"/>
-              <rect x="35" y="60" width="20" height="20" fill="#07070c"/>
-              <rect x="65" y="75" width="25" height="15" fill="#07070c"/>
-            </svg>
-          </div>
-
-          <div style="display: flex; justify-content: center; gap: 10px;">
-            <button class="btn btn-secondary" onclick="coordinatorModule.openStudentPreview('${opp.id}')">
-              👤 Open Student View
-            </button>
-            <button class="btn btn-accent" onclick="coordinatorModule.broadcastToBatch('${opp.id}')">
-              📢 Push Notification to Eligible Batch
-            </button>
-          </div>
         </div>
       </div>
     `;
@@ -351,9 +489,24 @@ window.coordinatorModule = (function () {
 
   function copyLinkToClipboard() {
     const input = document.getElementById('generated-url-input');
+    const copyBtn = document.getElementById('btn-modal-copy-link');
     if (input) {
       input.select();
       navigator.clipboard.writeText(input.value);
+      if (copyBtn) {
+        const originalHtml = copyBtn.innerHTML;
+        copyBtn.innerHTML = `
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          COPIED!
+        `;
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.innerHTML = originalHtml;
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      }
       window.app.showToast('Application link copied to clipboard!', 'success');
     }
   }

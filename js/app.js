@@ -6,25 +6,64 @@ window.app = (function () {
   let currentRole = 'coordinator'; // Default landing role: coordinator | admin | student
 
   async function init() {
-    // 1. Run Luxury Logo Startup Preloader Animation
-    runPreloaderSequence();
+    const loginScreen = document.getElementById('login-screen');
+    const appContainer = document.getElementById('app-container');
 
-    // 2. Check connection to live Backend REST API
+    // Check for active session
+    const hasAuth = window.hieroAuth && window.hieroAuth.isAuthenticated();
+
+    // Check URL parameters for view or explicit roles
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'apply') {
+      const oppId = params.get('oppId');
+      window.location.replace(`/apply${oppId ? '?oppId=' + encodeURIComponent(oppId) : ''}`);
+      return;
+    }
+    const viewParam = params.get('view') || params.get('role');
+    const oppIdParam = params.get('oppId');
+    const appIdParam = params.get('appId');
+
+    // PRIMARY REQUIREMENT: If not authenticated, ALWAYS show Login / Welcome Page first
+    if (!hasAuth) {
+      document.body.classList.remove('authenticated');
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.style.display = 'flex';
+        loginScreen.style.opacity = '1';
+        loginScreen.style.transform = 'none';
+      }
+      if (appContainer) {
+        appContainer.style.display = 'none';
+        appContainer.style.transform = 'none';
+      }
+      return;
+    }
+
+    // Authenticated user experience:
+    document.body.classList.add('authenticated');
+    if (loginScreen) {
+      loginScreen.classList.add('hidden');
+      loginScreen.style.display = 'none';
+      loginScreen.style.transform = 'none';
+    }
+    if (appContainer) {
+      appContainer.style.display = 'flex';
+      appContainer.style.opacity = '1';
+      appContainer.style.transform = 'none';
+      appContainer.style.left = '0';
+    }
+
+    // Check connection to live Backend REST API
     if (window.bridgeApi && typeof window.bridgeApi.checkBackendHealth === 'function') {
       await window.bridgeApi.checkBackendHealth();
     }
 
-    // 3. Check URL parameters for deep links
-    const params = new URLSearchParams(window.location.search);
-    const viewParam = params.get('view');
-    const oppIdParam = params.get('oppId');
-    const appIdParam = params.get('appId');
+    const storedUser = window.hieroAuth ? window.hieroAuth.getCurrentUser() : null;
+    const initialRole = viewParam && ['coordinator', 'admin', 'student'].includes(viewParam)
+      ? viewParam
+      : (storedUser && storedUser.role ? storedUser.role : currentRole);
 
-    if (viewParam && ['coordinator', 'admin', 'student'].includes(viewParam)) {
-      switchRole(viewParam);
-    } else {
-      switchRole(currentRole);
-    }
+    switchRole(initialRole);
 
     if (oppIdParam && currentRole === 'coordinator') {
       setTimeout(() => {
@@ -76,8 +115,8 @@ window.app = (function () {
     const select = document.getElementById('role-select-input');
     if (select) select.value = role;
 
-    // Update active nav-item highlighting in sidebar
-    document.querySelectorAll('.nav-item').forEach(item => {
+    // Update active horizontal top-nav-tab and nav-items
+    document.querySelectorAll('.top-nav-tab, .nav-item').forEach(item => {
       if (item.getAttribute('data-role') === role) {
         item.classList.add('active');
       } else if (item.getAttribute('data-role')) {

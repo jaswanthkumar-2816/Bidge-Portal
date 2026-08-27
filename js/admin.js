@@ -6,8 +6,47 @@
 window.adminModule = (function () {
   let pendingImportData = null;
 
+  // Active Filter State (persists across current session)
+  const activeFilters = {
+    minCGPA: 0.0,
+    academicYears: [] // e.g. ['3rd Year', 'Final Year']
+  };
+
+  // Temp state while filter modal is open
+  let tempFilters = {
+    minCGPA: 0.0,
+    academicYears: []
+  };
+
+  function getStudentYearCategories(student) {
+    const yearStr = String(student.academicYear || '').toLowerCase();
+    const regNo = String(student.regNo || '').toLowerCase();
+    const cats = [];
+    if (yearStr.includes('3rd') || yearStr.includes('third') || yearStr.includes('2023-2027') || regNo.startsWith('2023')) {
+      cats.push('3rd Year');
+    }
+    if (yearStr.includes('final') || yearStr.includes('2022-2026') || regNo.startsWith('2022') || cats.length === 0) {
+      cats.push('Final Year');
+    }
+    return cats;
+  }
+
+  function getStudentYearCategory(student) {
+    const cats = getStudentYearCategories(student);
+    return cats.join(', ');
+  }
+
   function init() {
     renderAdminDashboard();
+    // Subscribe to store updates for real-time live sync
+    if (window.bridgeStore && typeof window.bridgeStore.subscribe === 'function') {
+      window.bridgeStore.subscribe(() => {
+        const container = document.getElementById('admin-view-container');
+        if (container && container.style.display !== 'none') {
+          renderAdminDashboard();
+        }
+      });
+    }
   }
 
   function renderAdminDashboard() {
@@ -134,26 +173,45 @@ window.adminModule = (function () {
           <div class="table-header-bar">
             <div>
               <h3 style="font-size: 1.1rem; font-weight: 700;">Verified Final-Year Student Pool</h3>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Collegiate talent verified for direct industry opportunity matching</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                Collegiate talent verified for direct industry opportunity matching
+                <span id="admin-pool-counter" style="margin-left: 8px; color: #00ff66; font-weight: 700;">• Showing ${students.length} of ${students.length} Students</span>
+              </p>
             </div>
 
-            <!-- Search & Filters -->
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <div class="search-input-wrap" style="width: 240px;">
+            <!-- Search & Filters Toolbar -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+              <div class="search-input-wrap" style="width: 220px;">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" id="admin-student-search" class="form-control" placeholder="Search by name, regNo, skill..." oninput="adminModule.filterStudentTable()">
+                <input type="text" id="admin-student-search" class="form-control" placeholder="Search students..." oninput="adminModule.filterStudentTable()">
               </div>
-              <select id="admin-dept-filter" class="form-control" style="width: 150px;" onchange="adminModule.filterStudentTable()">
+              <select id="admin-dept-filter" class="form-control" style="width: 130px;" onchange="adminModule.filterStudentTable()">
                 <option value="ALL">All Depts</option>
                 ${college.departments.map(d => `<option value="${d.id}">${d.code}</option>`).join('')}
               </select>
-              <select id="admin-status-filter" class="form-control" style="width: 140px;" onchange="adminModule.filterStudentTable()">
+              <select id="admin-status-filter" class="form-control" style="width: 125px;" onchange="adminModule.filterStudentTable()">
                 <option value="ALL">All Status</option>
                 <option value="Active">Active</option>
                 <option value="Placed">Placed</option>
                 <option value="Ineligible">Ineligible</option>
               </select>
+
+              <!-- FILTER Trigger Button -->
+              <button id="btn-admin-open-filters" class="btn-filter-trigger" onclick="adminModule.openFilterModal()" title="Open Advanced Filters">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                </svg>
+                <span>Filter</span>
+                <span id="filter-active-indicator" class="filter-badge-count" style="display: none;">0</span>
+              </button>
             </div>
+          </div>
+
+          <!-- Active Filter Chips Strip -->
+          <div id="admin-active-filters-bar" class="active-filters-strip" style="display: none;">
+            <span class="active-filters-label">Active Filters:</span>
+            <div id="admin-active-filter-chips" class="active-filter-chips-list"></div>
+            <button type="button" class="btn-clear-all-filters" onclick="adminModule.resetAdvancedFilters()">Clear All</button>
           </div>
 
           <div style="overflow-x: auto;">
@@ -161,12 +219,14 @@ window.adminModule = (function () {
               <thead>
                 <tr>
                   <th>Student</th>
-                  <th>Reg No</th>
+                  <th>Roll Number</th>
                   <th>Department</th>
                   <th>CGPA</th>
-                  <th>Skills & Projects</th>
+                  <th>Applied Opportunity</th>
+                  <th>Resume</th>
+                  <th>App Status</th>
                   <th>Verification</th>
-                  <th>Status</th>
+                  <th>Placement</th>
                   <th style="text-align: right;">Actions</th>
                 </tr>
               </thead>
@@ -178,24 +238,82 @@ window.adminModule = (function () {
         </div>
       </div>
     `;
+
+    // Apply active session filters and render active filter chips
+    filterStudentTable();
   }
 
   function renderStudentRows(students) {
     if (!students || students.length === 0) {
       return `
         <tr>
-          <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-dim);">
-            No students found in the verified database.
+          <td colspan="10" style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);">
+            <div style="font-size: 1.6rem; margin-bottom: 8px;">🔍</div>
+            <div style="font-weight: 700; color: #ffffff; font-size: 1rem; margin-bottom: 4px;">No matching student profiles found</div>
+            <div style="font-size: 0.82rem; color: #94a3b8; max-width: 420px; margin: 0 auto 14px;">
+              No students match the current combination of search, minimum CGPA, or academic year criteria.
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="adminModule.resetAdvancedFilters()" style="color: #00ff66; border-color: rgba(0, 255, 102, 0.4);">
+              Reset All Filters
+            </button>
           </td>
         </tr>
       `;
     }
+
+    const state = window.bridgeStore ? window.bridgeStore.state : {};
 
     return students.map(s => {
       const isVerified = s.verificationStatus === 'Verified';
       const statusBadge = s.placementStatus === 'Placed' 
         ? '<span class="badge badge-placed">Placed</span>' 
         : (s.placementStatus === 'Active' ? '<span class="badge badge-open">Active</span>' : '<span class="badge badge-rejected">Ineligible</span>');
+
+      // Find applications for this student
+      const studentApps = (state.applications || []).filter(a => 
+        a.studentId === s.id || (a.studentRoll && a.studentRoll.toLowerCase() === s.regNo.toLowerCase())
+      );
+      const latestApp = studentApps.length > 0 ? studentApps[studentApps.length - 1] : null;
+      const opp = latestApp ? window.bridgeStore.getOpportunityById(latestApp.oppId) : null;
+
+      // Applied Opportunity representation
+      let oppHtml = '<span style="color: var(--text-dim); font-size: 0.78rem;">No active application</span>';
+      if (latestApp) {
+        const companyName = opp ? opp.company : (s.appliedOpportunityTitle?.split(' - ')[0] || 'Opportunity');
+        const roleTitle = opp ? opp.title : (s.appliedOpportunityTitle?.split(' - ')[1] || latestApp.oppTitle || latestApp.oppId);
+        oppHtml = `
+          <div>
+            <div style="font-weight: 700; color: #ffffff; font-size: 0.85rem;">${companyName}</div>
+            <div style="font-size: 0.74rem; color: #94a3b8; margin-top: 1px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${roleTitle}">${roleTitle}</div>
+            <div style="font-size: 0.68rem; color: #00ff66; margin-top: 2px; font-family: monospace;">ID: ${latestApp.oppId}</div>
+          </div>
+        `;
+      }
+
+      // Resume representation
+      const resumeFile = s.resumeFileName || latestApp?.resumeFileName || 'resume.pdf';
+      const resumeHref = s.resumeUrl || latestApp?.resumeUrl || '#';
+      const resumeHtml = (s.resumeUrl || latestApp?.resumeUrl || s.resumeFileName) ? `
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <a href="${resumeHref}" target="_blank" 
+             style="display: inline-flex; align-items: center; gap: 5px; color: #38bdf8; font-size: 0.78rem; text-decoration: none; font-weight: 600; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); padding: 3px 8px; border-radius: 6px; width: fit-content;"
+             onclick="event.stopPropagation();" title="${resumeFile}">
+            <span>📄</span>
+            <span style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${resumeFile}</span>
+          </a>
+          <span style="font-size: 0.68rem; color: #00ff66;">✓ Uploaded</span>
+        </div>
+      ` : `<span style="color: var(--text-dim); font-size: 0.78rem;">—</span>`;
+
+      // Application Status badge
+      let appStatusHtml = '<span style="color: var(--text-dim); font-size: 0.78rem;">—</span>';
+      if (latestApp) {
+        let badgeClass = 'badge-open';
+        if (latestApp.status === 'Shortlisted') badgeClass = 'badge-shortlist';
+        else if (latestApp.status === 'Selected' || latestApp.status === 'Sent to Recruiter') badgeClass = 'badge-placed';
+        else if (latestApp.status === 'Rejected') badgeClass = 'badge-rejected';
+        appStatusHtml = `<span class="badge ${badgeClass}">${latestApp.status || 'Applied'}</span>`;
+      }
 
       return `
         <tr>
@@ -204,22 +322,18 @@ window.adminModule = (function () {
               <div class="avatar">${s.avatar || 'ST'}</div>
               <div>
                 <div class="candidate-name">${s.name}</div>
-                <div class="candidate-id">${s.email}</div>
+                <div class="candidate-id">
+                  ${s.email} • <span style="color: #00ff66; font-weight: 700;">${s.academicYear || 'Final Year'}</span>
+                </div>
               </div>
             </div>
           </td>
-          <td><strong>${s.regNo}</strong></td>
+          <td><strong style="font-family: monospace; font-size: 0.88rem; color: #ffffff;">${s.regNo}</strong></td>
           <td><span class="badge badge-new">${s.department}</span></td>
-          <td><strong style="color: var(--success); font-size: 0.95rem;">${Number(s.cgpa).toFixed(2)}</strong></td>
-          <td>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-                ${s.skills.slice(0, 3).map(sk => `<span class="skill-pill">${sk}</span>`).join('')}
-                ${s.skills.length > 3 ? `<span class="skill-pill">+${s.skills.length - 3}</span>` : ''}
-              </div>
-              <span style="font-size: 0.75rem; color: var(--text-dim);">${s.projectCount || s.projects?.length || 0} Projects Verified</span>
-            </div>
-          </td>
+          <td><strong style="color: #00ff66; font-size: 0.95rem;">${Number(s.cgpa).toFixed(2)}</strong></td>
+          <td>${oppHtml}</td>
+          <td>${resumeHtml}</td>
+          <td>${appStatusHtml}</td>
           <td>
             <button class="badge ${isVerified ? 'badge-open' : 'badge-shortlist'}" style="cursor: pointer; border: none;" onclick="adminModule.toggleVerification('${s.id}')">
               ${isVerified ? '✓ Verified' : '⏳ Pending'}
@@ -249,20 +363,372 @@ window.adminModule = (function () {
     const allStudents = window.bridgeStore.getStudents();
     const filtered = allStudents.filter(s => {
       const matchesQuery = !query || 
-        s.name.toLowerCase().includes(query) ||
-        s.regNo.toLowerCase().includes(query) ||
-        s.email.toLowerCase().includes(query) ||
-        s.skills.some(sk => sk.toLowerCase().includes(query));
+        (s.name && s.name.toLowerCase().includes(query)) ||
+        (s.regNo && s.regNo.toLowerCase().includes(query)) ||
+        (s.email && s.email.toLowerCase().includes(query)) ||
+        (s.academicYear && s.academicYear.toLowerCase().includes(query)) ||
+        (s.appliedOpportunityTitle && s.appliedOpportunityTitle.toLowerCase().includes(query)) ||
+        (s.resumeFileName && s.resumeFileName.toLowerCase().includes(query)) ||
+        (s.skills && s.skills.some(sk => sk.toLowerCase().includes(query)));
 
       const matchesDept = (dept === 'ALL') || (s.department === dept);
       const matchesStatus = (status === 'ALL') || (s.placementStatus === status);
 
-      return matchesQuery && matchesDept && matchesStatus;
+      // 4. Minimum CGPA filter
+      const studentCgpa = parseFloat(s.cgpa) || 0.0;
+      const matchesCgpa = activeFilters.minCGPA <= 0.0 || studentCgpa >= activeFilters.minCGPA;
+
+      // 5. Academic Year filter (3rd Year, Final Year)
+      let matchesYear = true;
+      if (activeFilters.academicYears && activeFilters.academicYears.length > 0) {
+        const studentCats = getStudentYearCategories(s);
+        matchesYear = activeFilters.academicYears.some(y => studentCats.includes(y));
+      }
+
+      return matchesQuery && matchesDept && matchesStatus && matchesCgpa && matchesYear;
     });
 
     const tbody = document.getElementById('admin-student-tbody');
     if (tbody) {
       tbody.innerHTML = renderStudentRows(filtered);
+    }
+
+    // Dynamic Result Count (e.g. Showing 12 of 48 Students)
+    const counter = document.getElementById('admin-pool-counter');
+    if (counter) {
+      counter.innerHTML = `• Showing <strong>${filtered.length}</strong> of <strong>${allStudents.length}</strong> Students`;
+    }
+
+    // Dynamic Active Filter Chips Display
+    updateActiveFilterChipsDisplay();
+  }
+
+  // === Advanced Filter Modal & Interactivity Handlers ===
+  function openFilterModal() {
+    tempFilters.minCGPA = activeFilters.minCGPA;
+    tempFilters.academicYears = [...activeFilters.academicYears];
+
+    const currentMinCgpa = tempFilters.minCGPA || 0.0;
+    const is3rdYear = tempFilters.academicYears.includes('3rd Year');
+    const isFinalYear = tempFilters.academicYears.includes('Final Year');
+
+    const modalHtml = `
+      <div class="modal-backdrop open" id="filter-modal">
+        <div class="modal-content filter-panel-content">
+          <button class="modal-close" onclick="adminModule.closeModal('filter-modal')" title="Close filter panel">✕</button>
+
+          <!-- Header -->
+          <div class="filter-panel-header">
+            <div class="filter-header-icon-wrap">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="filter-panel-title">Filter Student Profiles</h3>
+              <p class="filter-panel-subtitle">Select minimum academic criteria and batch year to refine talent pool</p>
+            </div>
+          </div>
+
+          <!-- Filter Body -->
+          <div class="filter-panel-body">
+            
+            <!-- 1. MINIMUM CGPA FILTER (Interactive Animated Slider) -->
+            <div class="filter-section">
+              <div class="filter-section-header">
+                <div>
+                  <label class="filter-section-label">1. MINIMUM CGPA</label>
+                  <div class="filter-section-desc">Show only students with CGPA equal to or above this score</div>
+                </div>
+                <div class="cgpa-filter-val-pill">
+                  <span class="cgpa-val-text" id="filter-cgpa-display">${currentMinCgpa > 0 ? `≥ ${currentMinCgpa.toFixed(1)}` : 'All Scores (≥ 0.0)'}</span>
+                </div>
+              </div>
+
+              <div class="filter-slider-container">
+                <div class="filter-slider-track-wrap">
+                  <input 
+                    type="range" 
+                    id="filter-cgpa-slider" 
+                    min="0.0" 
+                    max="10.0" 
+                    step="0.1" 
+                    value="${currentMinCgpa}" 
+                    class="spatial-cgpa-slider filter-cgpa-input"
+                    oninput="adminModule.handleFilterSliderChange(this.value)"
+                  >
+                </div>
+
+                <!-- Markings: 0.0 — 1.0 — 2.0 — 3.0 — 4.0 — 5.0 — 6.0 — 7.0 — 8.0 — 9.0 — 10.0 -->
+                <div class="filter-cgpa-ticks">
+                  <span class="f-tick" data-val="0.0" onclick="adminModule.setFilterSliderVal(0.0)">0.0</span>
+                  <span class="f-tick" data-val="1.0" onclick="adminModule.setFilterSliderVal(1.0)">1.0</span>
+                  <span class="f-tick" data-val="2.0" onclick="adminModule.setFilterSliderVal(2.0)">2.0</span>
+                  <span class="f-tick" data-val="3.0" onclick="adminModule.setFilterSliderVal(3.0)">3.0</span>
+                  <span class="f-tick" data-val="4.0" onclick="adminModule.setFilterSliderVal(4.0)">4.0</span>
+                  <span class="f-tick" data-val="5.0" onclick="adminModule.setFilterSliderVal(5.0)">5.0</span>
+                  <span class="f-tick" data-val="6.0" onclick="adminModule.setFilterSliderVal(6.0)">6.0</span>
+                  <span class="f-tick" data-val="7.0" onclick="adminModule.setFilterSliderVal(7.0)">7.0</span>
+                  <span class="f-tick" data-val="8.0" onclick="adminModule.setFilterSliderVal(8.0)">8.0</span>
+                  <span class="f-tick" data-val="9.0" onclick="adminModule.setFilterSliderVal(9.0)">9.0</span>
+                  <span class="f-tick" data-val="10.0" onclick="adminModule.setFilterSliderVal(10.0)">10.0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. ACADEMIC YEAR FILTER (3rd Year, Final Year) -->
+            <div class="filter-section">
+              <div class="filter-section-header">
+                <div>
+                  <label class="filter-section-label">2. ACADEMIC YEAR</label>
+                  <div class="filter-section-desc">Select academic cohorts to display (3rd Year, Final Year, or both)</div>
+                </div>
+              </div>
+
+              <div class="academic-year-options-grid">
+                <!-- 3rd Year Chip Card -->
+                <label class="year-select-card ${is3rdYear ? 'selected' : ''}" id="card-year-3rd">
+                  <input 
+                    type="checkbox" 
+                    id="chk-year-3rd" 
+                    value="3rd Year" 
+                    ${is3rdYear ? 'checked' : ''} 
+                    onchange="adminModule.handleYearCheckboxChange('3rd Year', this.checked)"
+                  >
+                  <div class="year-card-indicator"></div>
+                  <div class="year-card-info">
+                    <span class="year-card-title">3rd Year</span>
+                    <span class="year-card-sub">Batch 2023 – 2027 • Pre-Final Pool</span>
+                  </div>
+                </label>
+
+                <!-- Final Year Chip Card -->
+                <label class="year-select-card ${isFinalYear ? 'selected' : ''}" id="card-year-final">
+                  <input 
+                    type="checkbox" 
+                    id="chk-year-final" 
+                    value="Final Year" 
+                    ${isFinalYear ? 'checked' : ''} 
+                    onchange="adminModule.handleYearCheckboxChange('Final Year', this.checked)"
+                  >
+                  <div class="year-card-indicator"></div>
+                  <div class="year-card-info">
+                    <span class="year-card-title">Final Year</span>
+                    <span class="year-card-sub">Batch 2022 – 2026 • Graduating Pool</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Dynamic Live Preview Match Counter -->
+            <div class="filter-preview-banner">
+              <span class="preview-icon">👁️</span>
+              <span id="filter-preview-text">Calculating matching profiles...</span>
+            </div>
+
+          </div>
+
+          <!-- Footer Action Buttons -->
+          <div class="filter-panel-footer">
+            <button type="button" class="btn-filter-reset" onclick="adminModule.resetAdvancedFilters()">
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              RESET FILTER
+            </button>
+            <button type="button" class="btn-filter-apply" onclick="adminModule.applyAdvancedFilters()">
+              <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+              </svg>
+              APPLY FILTER
+            </button>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    document.getElementById('modal-root').innerHTML = modalHtml;
+    
+    // Initialize slider track fill visual
+    const slider = document.getElementById('filter-cgpa-slider');
+    if (slider) {
+      updateSliderTrackFill(slider, currentMinCgpa);
+    }
+    updateFilterPreviewCount();
+  }
+
+  function updateSliderTrackFill(slider, val) {
+    if (!slider) return;
+    const pct = (parseFloat(val) / 10.0) * 100;
+    slider.style.background = `linear-gradient(to right, #00ff66 0%, #00ff66 ${pct}%, rgba(255, 255, 255, 0.1) ${pct}%, rgba(255, 255, 255, 0.1) 100%)`;
+  }
+
+  function handleFilterSliderChange(val) {
+    const parsedVal = parseFloat(val) || 0.0;
+    tempFilters.minCGPA = parsedVal;
+
+    const display = document.getElementById('filter-cgpa-display');
+    if (display) {
+      display.textContent = parsedVal > 0.0 ? `≥ ${parsedVal.toFixed(1)}` : 'All Scores (≥ 0.0)';
+    }
+
+    const slider = document.getElementById('filter-cgpa-slider');
+    if (slider) {
+      updateSliderTrackFill(slider, parsedVal);
+    }
+
+    updateFilterPreviewCount();
+  }
+
+  function setFilterSliderVal(val) {
+    const slider = document.getElementById('filter-cgpa-slider');
+    if (slider) {
+      slider.value = val;
+      handleFilterSliderChange(val);
+    }
+  }
+
+  function handleYearCheckboxChange(year, isChecked) {
+    if (isChecked) {
+      if (!tempFilters.academicYears.includes(year)) {
+        tempFilters.academicYears.push(year);
+      }
+    } else {
+      tempFilters.academicYears = tempFilters.academicYears.filter(y => y !== year);
+    }
+
+    const cardId = year === '3rd Year' ? 'card-year-3rd' : 'card-year-final';
+    const card = document.getElementById(cardId);
+    if (card) {
+      if (isChecked) card.classList.add('selected');
+      else card.classList.remove('selected');
+    }
+
+    updateFilterPreviewCount();
+  }
+
+  function updateFilterPreviewCount() {
+    const previewText = document.getElementById('filter-preview-text');
+    if (!previewText) return;
+
+    const query = (document.getElementById('admin-student-search')?.value || '').toLowerCase().trim();
+    const dept = document.getElementById('admin-dept-filter')?.value || 'ALL';
+    const status = document.getElementById('admin-status-filter')?.value || 'ALL';
+
+    const allStudents = window.bridgeStore.getStudents();
+    const count = allStudents.filter(s => {
+      const matchesQuery = !query || 
+        (s.name && s.name.toLowerCase().includes(query)) ||
+        (s.regNo && s.regNo.toLowerCase().includes(query)) ||
+        (s.email && s.email.toLowerCase().includes(query));
+
+      const matchesDept = (dept === 'ALL') || (s.department === dept);
+      const matchesStatus = (status === 'ALL') || (s.placementStatus === status);
+
+      const studentCgpa = parseFloat(s.cgpa) || 0.0;
+      const matchesCgpa = tempFilters.minCGPA <= 0.0 || studentCgpa >= tempFilters.minCGPA;
+
+      let matchesYear = true;
+      if (tempFilters.academicYears && tempFilters.academicYears.length > 0) {
+        const studentCats = getStudentYearCategories(s);
+        matchesYear = tempFilters.academicYears.some(y => studentCats.includes(y));
+      }
+
+      return matchesQuery && matchesDept && matchesStatus && matchesCgpa && matchesYear;
+    }).length;
+
+    previewText.innerHTML = `Live Match Preview: <strong>${count}</strong> of <strong>${allStudents.length}</strong> student profile${count === 1 ? '' : 's'} will be displayed`;
+  }
+
+  function applyAdvancedFilters() {
+    activeFilters.minCGPA = tempFilters.minCGPA;
+    activeFilters.academicYears = [...tempFilters.academicYears];
+
+    closeModal('filter-modal');
+    filterStudentTable();
+
+    const activeList = [];
+    if (activeFilters.minCGPA > 0) activeList.push(`CGPA ≥ ${activeFilters.minCGPA.toFixed(1)}`);
+    if (activeFilters.academicYears.length > 0) activeList.push(activeFilters.academicYears.join(' + '));
+    
+    if (activeList.length > 0) {
+      window.app.showToast(`Active Filters applied: ${activeList.join(', ')}`, 'success');
+    } else {
+      window.app.showToast('Showing all student profiles.', 'info');
+    }
+  }
+
+  function resetAdvancedFilters() {
+    activeFilters.minCGPA = 0.0;
+    activeFilters.academicYears = [];
+    tempFilters.minCGPA = 0.0;
+    tempFilters.academicYears = [];
+
+    closeModal('filter-modal');
+    filterStudentTable();
+    window.app.showToast('All advanced filters reset. Complete talent pool restored.', 'info');
+  }
+
+  function removeFilter(type, val) {
+    if (type === 'cgpa') {
+      activeFilters.minCGPA = 0.0;
+    } else if (type === 'year') {
+      activeFilters.academicYears = activeFilters.academicYears.filter(y => y !== val);
+    }
+    filterStudentTable();
+    window.app.showToast('Filter updated.', 'info');
+  }
+
+  function updateActiveFilterChipsDisplay() {
+    const bar = document.getElementById('admin-active-filters-bar');
+    const chipsContainer = document.getElementById('admin-active-filter-chips');
+    const indicator = document.getElementById('filter-active-indicator');
+    const filterBtn = document.getElementById('btn-admin-open-filters');
+
+    const hasCgpa = activeFilters.minCGPA > 0.0;
+    const hasYears = activeFilters.academicYears && activeFilters.academicYears.length > 0;
+    const totalActive = (hasCgpa ? 1 : 0) + (activeFilters.academicYears ? activeFilters.academicYears.length : 0);
+
+    if (indicator) {
+      if (totalActive > 0) {
+        indicator.textContent = totalActive;
+        indicator.style.display = 'inline-flex';
+        if (filterBtn) filterBtn.classList.add('active');
+      } else {
+        indicator.style.display = 'none';
+        if (filterBtn) filterBtn.classList.remove('active');
+      }
+    }
+
+    if (!bar || !chipsContainer) return;
+
+    if (totalActive > 0) {
+      bar.style.display = 'flex';
+      let chipsHtml = '';
+
+      if (hasCgpa) {
+        chipsHtml += `
+          <span class="active-filter-chip">
+            Minimum CGPA ≥ ${activeFilters.minCGPA.toFixed(1)}
+            <button type="button" class="chip-remove-btn" onclick="adminModule.removeFilter('cgpa')" title="Remove CGPA filter">✕</button>
+          </span>
+        `;
+      }
+
+      activeFilters.academicYears.forEach(year => {
+        chipsHtml += `
+          <span class="active-filter-chip">
+            ${year}
+            <button type="button" class="chip-remove-btn" onclick="adminModule.removeFilter('year', '${year}')" title="Remove ${year} filter">✕</button>
+          </span>
+        `;
+      });
+
+      chipsContainer.innerHTML = chipsHtml;
+    } else {
+      bar.style.display = 'none';
+      chipsContainer.innerHTML = '';
     }
   }
 
@@ -718,9 +1184,85 @@ window.adminModule = (function () {
     const student = window.bridgeStore.getStudentById(id);
     if (!student) return;
 
+    const state = window.bridgeStore ? window.bridgeStore.state : {};
+    const studentApps = (state.applications || []).filter(a => 
+      a.studentId === student.id || (a.studentRoll && a.studentRoll.toLowerCase() === student.regNo.toLowerCase())
+    );
+    const latestApp = studentApps.length > 0 ? studentApps[studentApps.length - 1] : null;
+
+    const resumeFile = student.resumeFileName || latestApp?.resumeFileName || 'resume.pdf';
+    const resumeHref = student.resumeUrl || latestApp?.resumeUrl || '#';
+
+    // Application Submissions Section
+    let applicationsSectionHtml = '';
+    if (studentApps.length > 0) {
+      applicationsSectionHtml = `
+        <div style="margin-bottom: 1.5rem; background: rgba(0, 255, 102, 0.03); border: 1px solid rgba(0, 255, 102, 0.2); border-radius: 12px; padding: 16px 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 0.82rem; font-weight: 800; color: #00ff66; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 6px;">
+              <span>🎯</span> Submitted Opportunity Applications (${studentApps.length})
+            </div>
+            <span class="badge ${latestApp.status === 'Shortlisted' ? 'badge-shortlist' : (latestApp.status === 'Selected' ? 'badge-placed' : 'badge-open')}">
+              ${latestApp.status || 'Applied'}
+            </span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            ${studentApps.map(app => {
+              const curOpp = window.bridgeStore.getOpportunityById(app.oppId);
+              const compName = curOpp ? curOpp.company : (app.oppTitle?.split(' - ')[0] || 'Opportunity');
+              const roleTitle = curOpp ? curOpp.title : (app.oppTitle?.split(' - ')[1] || app.oppTitle || app.oppId);
+              const subDate = app.appliedAt ? new Date(app.appliedAt).toLocaleString() : 'Recent';
+              const appResume = app.resumeFileName || student.resumeFileName || 'resume.pdf';
+              const appResumeUrl = app.resumeUrl || student.resumeUrl || '#';
+              const appCgpa = app.cgpa ? Number(app.cgpa).toFixed(2) : Number(student.cgpa).toFixed(2);
+
+              return `
+                <div style="background: rgba(4, 8, 5, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px 14px;">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px;">
+                    <div>
+                      <div style="font-weight: 800; color: #ffffff; font-size: 0.95rem;">${compName}</div>
+                      <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 2px;">${roleTitle}</div>
+                    </div>
+                    <span class="badge badge-open" style="font-size: 0.70rem;">${app.status || 'Applied'}</span>
+                  </div>
+
+                  <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.76rem; color: #94a3b8; margin-bottom: 8px;">
+                    <span><strong>Opportunity ID:</strong> <span style="color: #cbd5e1; font-family: monospace;">${app.oppId}</span></span>
+                    <span>•</span>
+                    <span><strong>Academic Year:</strong> <strong style="color: #00ff66;">${app.academicYear || student.academicYear || 'Final Year'}</strong></span>
+                    <span>•</span>
+                    <span><strong>Submission:</strong> ${subDate}</span>
+                    <span>•</span>
+                    <span><strong>Submitted CGPA:</strong> <strong style="color: #00ff66;">${appCgpa}</strong></span>
+                  </div>
+
+                  <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 6px; padding: 6px 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #cbd5e1;">
+                      <span>📄</span>
+                      <span style="font-weight: 600;">${appResume}</span>
+                    </div>
+                    <a href="${appResumeUrl}" target="_blank" class="btn btn-secondary btn-sm" style="padding: 3px 8px; font-size: 0.72rem; color: #38bdf8;" onclick="event.stopPropagation();">
+                      View Uploaded Resume ↗
+                    </a>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    } else {
+      applicationsSectionHtml = `
+        <div style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 12px 16px; font-size: 0.82rem; color: var(--text-dim);">
+          ℹ️ No opportunity applications submitted yet for this student.
+        </div>
+      `;
+    }
+
     const modalHtml = `
       <div class="modal-backdrop open" id="profile-modal">
-        <div class="modal-content" style="max-width: 650px;">
+        <div class="modal-content" style="max-width: 680px;">
           <button class="modal-close" onclick="adminModule.closeModal('profile-modal')">✕</button>
           
           <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border);">
@@ -728,27 +1270,39 @@ window.adminModule = (function () {
             <div>
               <h2 style="font-size: 1.35rem; font-weight: 800;">${student.name}</h2>
               <div style="font-size: 0.85rem; color: var(--text-dim);">
-                ${student.regNo} • ${student.department} (${student.academicYear})
+                ${student.regNo} • ${student.department} • <strong style="color: #00ff66;">${student.academicYear || 'Final Year'}</strong>
               </div>
             </div>
             <span class="badge badge-open" style="margin-left: auto;">${student.verificationStatus}</span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+          <!-- 4-Box Key Metric Summary -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem;">
             <div class="criteria-item" style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm);">
-              <span style="color: var(--text-dim); font-size: 0.75rem;">Verified CGPA</span>
-              <strong style="color: var(--success); font-size: 1.25rem;">${Number(student.cgpa).toFixed(2)}</strong>
+              <span style="color: var(--text-dim); font-size: 0.70rem; text-transform: uppercase;">Verified CGPA</span>
+              <strong style="color: #00ff66; font-size: 1.15rem; display: block; margin-top: 2px;">${Number(student.cgpa).toFixed(2)}</strong>
             </div>
             <div class="criteria-item" style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm);">
-              <span style="color: var(--text-dim); font-size: 0.75rem;">Placement Status</span>
-              <strong style="color: var(--primary-light); font-size: 1.1rem;">${student.placementStatus}</strong>
+              <span style="color: var(--text-dim); font-size: 0.70rem; text-transform: uppercase;">Placement</span>
+              <strong style="color: var(--primary-light); font-size: 1.0rem; display: block; margin-top: 2px;">${student.placementStatus}</strong>
+            </div>
+            <div class="criteria-item" style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm);">
+              <span style="color: var(--text-dim); font-size: 0.70rem; text-transform: uppercase;">Applications</span>
+              <strong style="color: #ffffff; font-size: 1.15rem; display: block; margin-top: 2px;">${studentApps.length}</strong>
+            </div>
+            <div class="criteria-item" style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm);">
+              <span style="color: var(--text-dim); font-size: 0.70rem; text-transform: uppercase;">App Status</span>
+              <strong style="color: #38bdf8; font-size: 1.0rem; display: block; margin-top: 2px;">${latestApp ? latestApp.status : 'None'}</strong>
             </div>
           </div>
+
+          <!-- Submitted Opportunity Applications Section -->
+          ${applicationsSectionHtml}
 
           <div style="margin-bottom: 1.25rem;">
             <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Technical & Domain Skills</div>
             <div class="skills-pill-wrap">
-              ${student.skills.map(sk => `<span class="skill-pill matched">${sk}</span>`).join('')}
+              ${(student.skills || []).map(sk => `<span class="skill-pill matched">${sk}</span>`).join('')}
             </div>
           </div>
 
@@ -772,8 +1326,8 @@ window.adminModule = (function () {
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border);">
-            <a href="${student.resumeUrl}" target="_blank" class="btn btn-secondary btn-sm" onclick="event.preventDefault(); window.app.showToast('Viewing verified collegiate resume: ' + '${student.name}', 'info');">
-              📄 View Verified Resume
+            <a href="${resumeHref}" target="_blank" class="btn btn-secondary btn-sm" onclick="if (!this.getAttribute('href') || this.getAttribute('href') === '#') { event.preventDefault(); window.app.showToast('No resume file attached yet.', 'info'); }">
+              📄 View Verified Resume (${resumeFile})
             </a>
             <button class="btn btn-primary btn-sm" onclick="adminModule.closeModal('profile-modal')">Close</button>
           </div>
@@ -785,7 +1339,13 @@ window.adminModule = (function () {
 
   function closeModal(id) {
     const el = document.getElementById(id);
-    if (el) el.remove();
+    if (el) {
+      if (typeof el.remove === 'function') {
+        el.remove();
+      } else {
+        el.style.display = 'none';
+      }
+    }
   }
 
   return {
@@ -793,6 +1353,16 @@ window.adminModule = (function () {
     render: renderAdminDashboard,
     renderAdminDashboard,
     filterStudentTable,
+    openFilterModal,
+    handleFilterSliderChange,
+    setFilterSliderVal,
+    handleYearCheckboxChange,
+    applyAdvancedFilters,
+    resetAdvancedFilters,
+    removeFilter,
+    getStudentYearCategory,
+    getStudentYearCategories,
+    activeFilters,
     toggleVerification,
     deleteStudent,
     openCollegeModal,

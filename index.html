@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="HIERO Bridge - Premium 3D Biomorphic Enterprise Placement Platform connecting verified final-year collegiate talent to industry opportunities created in HIERO Connect.">
-  <title>HIERO Bridge | Academia–Industry Spatial Talent Gateway</title>
+  <meta name="description" content="HIERO Bridge - Premium Academia–Industry Spatial Talent Gateway connecting verified collegiate talent to industry opportunities.">
+  <title>HIERO Bridge | Spatial Talent Gateway</title>
   
   <link rel="icon" type="image/png" href="assets/hiero-bridge-logo.png">
 
@@ -19,184 +19,473 @@
   <!-- Premium 3D Biomorphic Enterprise Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="hiero-entry-body">
 
-  <!-- ==========================================================================
-       LUXURY LOGO STARTUP PRELOADER
-       ========================================================================== -->
-  <div id="hiero-preloader" class="preloader-overlay">
+  <!-- Luxury Startup Preloader (smooth transition overlay) -->
+  <div id="hiero-preloader" class="preloader-overlay" style="display: none;">
     <div class="preloader-content">
-      <!-- 3D Biomorphic Ring & Glowing Lotus Emblem -->
       <div class="preloader-emblem-wrap">
         <div class="preloader-orbital-ring"></div>
         <div class="preloader-orbital-ring ring-2"></div>
         <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge" class="preloader-logo-img">
         <div class="preloader-glow-halo"></div>
       </div>
-
-      <div class="preloader-brand-title">
-        HIERO <span>BRIDGE</span>
-      </div>
-      <div class="preloader-subtext">
-        Academia–Industry Spatial Talent Gateway
-      </div>
-
-      <!-- Live Loading Progress & Telemetry -->
+      <div class="preloader-brand-title">HIERO <span>BRIDGE</span></div>
+      <div class="preloader-subtext">Spatial Talent Gateway</div>
       <div class="preloader-progress-box">
         <div class="preloader-progress-bar">
           <div id="preloader-progress-fill" class="preloader-progress-fill"></div>
         </div>
         <div class="preloader-status-row">
-          <span id="preloader-status-text" class="preloader-status-text">Initializing Spatial Gateway...</span>
+          <span id="preloader-status-text" class="preloader-status-text">Connecting to Spatial Operating Hub...</span>
           <span id="preloader-percentage" class="preloader-percentage">0%</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Antigravity Interactive Constellation Particle Canvas -->
-  <canvas id="antigravity-bg"></canvas>
+  <!-- Cursor-Reactive Neural Constellation Particle Network Canvas -->
+  <canvas id="network-canvas" class="network-bg-canvas"></canvas>
 
   <!-- ==========================================================================
-       SPATIAL APPLICATION SHELL
+       1. HIERO BRIDGE LOGIN & LANDING ENTRY PAGE (DEFAULT OPENING SCREEN)
        ========================================================================== -->
-  <div id="app-container">
-    <!-- Spatial Left Navigation Rail -->
-    <aside class="sidebar">
-      <!-- Brand Header with Glowing Lotus Bridge Logo -->
-      <div class="brand-wrapper">
+  <div id="login-screen" class="login-screen-layout">
+    
+    <!-- Top & Center Split-Screen Stage -->
+    <div class="login-main-stage">
+
+      <!-- LEFT SIDE — HIERO BRAND EXPERIENCE -->
+      <section class="brand-showcase-column" aria-label="Hiero Bridge Brand Showcase">
+        
+        <!-- A. Small Hiero Bridge Identity at the Top -->
+        <div class="brand-top-identity">
+          <div class="brand-top-logo-frame">
+            <img src="assets/hiero-bridge-logo.png" alt="Hiero Bridge Lotus" class="identity-lotus-img">
+          </div>
+          <div class="brand-top-text">
+            <div class="identity-title">HIERO <span class="accent-green">BRIDGE</span></div>
+            <div class="identity-subtitle">SPATIAL TALENT GATEWAY</div>
+          </div>
+        </div>
+
+        <!-- B. Main Central Brand Visual & Holographic Platform -->
+        <div class="brand-center-visual">
+          <!-- Exact Approved HIERO Logo (Preserved 100% Unchanged) -->
+          <div class="hero-logo-frame">
+            <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge Approved Logo" class="approved-hiero-hero-img">
+            <div class="logo-ambient-green-glow"></div>
+          </div>
+
+          <!-- Futuristic Holographic Projection Platform Underneath -->
+          <div class="holo-platform-wrap" aria-hidden="true">
+            <!-- 3D Perspective Concentric Glowing Rings -->
+            <div class="holo-rings-3d">
+              <div class="holo-ring holo-ring-1"></div>
+              <div class="holo-ring holo-ring-2"></div>
+              <div class="holo-ring holo-ring-3"></div>
+              <div class="holo-ring holo-ring-4"></div>
+              <!-- Perspective Grid Mesh Lines -->
+              <div class="holo-grid-plane"></div>
+            </div>
+
+            <!-- Soft Green Laser Core & Upward Radiant Flare -->
+            <div class="holo-core-flare"></div>
+
+            <!-- Subtle Vertical Digital Light Rays -->
+            <div class="holo-vertical-beams">
+              <span class="beam beam-1"></span>
+              <span class="beam beam-2"></span>
+              <span class="beam beam-3"></span>
+              <span class="beam beam-4"></span>
+              <span class="beam beam-5"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- C. Brand Messaging -->
+        <div class="brand-messaging">
+          <h2 class="brand-slogan">Intelligent. Connected. Limitless.</h2>
+          <p class="brand-description">
+            Empowering institutions to discover, engage and recruit top talent seamlessly.
+          </p>
+        </div>
+
+      </section>
+
+      <!-- RIGHT SIDE — LOGIN EXPERIENCE (SPACIOUS AUTHENTICATION PANEL) -->
+      <section class="auth-panel-column" aria-label="Sign In Experience">
+        <div class="auth-card">
+          
+          <!-- Login Header -->
+          <div class="auth-header">
+            <div class="welcome-badge">
+              <svg class="badge-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+              <span>Welcome Back!</span>
+            </div>
+            <h1 class="auth-title">Sign in to <span class="accent-green">your account</span></h1>
+            <p class="auth-subtitle">Access your Hiero Bridge dashboard</p>
+          </div>
+
+          <!-- Social Login Options (OAuth Ready Architecture) -->
+          <div class="social-login-group">
+            <!-- Continue with Google -->
+            <button type="button" id="social-google-btn" class="btn-social btn-google" aria-label="Continue with Google">
+              <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.94 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <!-- Continue with GitHub -->
+            <button type="button" id="social-github-btn" class="btn-social btn-github" aria-label="Continue with GitHub">
+              <svg class="social-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+              </svg>
+              <span>Continue with GitHub</span>
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="auth-divider">
+            <span class="divider-line"></span>
+            <span class="divider-text">OR</span>
+            <span class="divider-line"></span>
+          </div>
+
+          <!-- Email Login Form -->
+          <form id="hiero-login-form" class="auth-form" novalidate>
+            <!-- Error Alert -->
+            <div id="login-error-msg" class="login-error-alert" style="display: none;"></div>
+
+            <!-- Email Address Field -->
+            <div class="form-group">
+              <label for="login-email" class="form-label sr-only">Email Address</label>
+              <div class="input-container">
+                <svg class="input-leading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="16" x="2" y="4" rx="2"/>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                </svg>
+                <input type="email" id="login-email" class="form-input" placeholder="Email Address" required autocomplete="email">
+              </div>
+            </div>
+
+            <!-- Password Field with Visibility Toggle -->
+            <div class="form-group">
+              <label for="login-password" class="form-label sr-only">Password</label>
+              <div class="input-container">
+                <svg class="input-leading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <input type="password" id="login-password" class="form-input" placeholder="Password" required autocomplete="current-password">
+                <button type="button" id="password-toggle-btn" class="input-trailing-action" aria-label="Toggle password visibility">
+                  <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg class="eye-closed" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <path d="m9.88 9.88 4.24 4.24m-7.07-1.41C4.46 14.54 2 12 2 12s3-7 10-7a9.77 9.77 0 0 1 5 1.39m3.05 2.71C21.36 10.42 22 12 22 12s-3 7-10 7a9.77 9.77 0 0 1-5.11-1.45"/>
+                    <line x1="2" y1="22" x2="22" y2="2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Account Options: Remember Me & Forgot Password -->
+            <div class="account-options-row">
+              <label class="custom-checkbox-label">
+                <input type="checkbox" id="remember-me-checkbox" class="custom-checkbox-input">
+                <span class="custom-checkbox-indicator">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </span>
+                <span class="checkbox-text">Remember me</span>
+              </label>
+              <a href="#forgot" id="forgot-password-link" class="forgot-password-link">Forgot password?</a>
+            </div>
+
+            <!-- Dominant Primary Login Button -->
+            <button type="submit" id="login-submit-btn" class="btn-primary-cta">
+              <span>Login</span>
+              <svg class="arrow-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+
+            <!-- Sign Up Prompt -->
+            <div class="auth-footer-prompt">
+              <span>Don't have an account?</span>
+              <a href="#signup" id="signup-link" class="signup-link">Sign up</a>
+            </div>
+
+            <!-- Quick Persona Auto-fill Switcher (Demo / Testing) -->
+            <div class="demo-personas-section">
+              <div class="persona-chips-label">⚡ Quick Role Switcher (Demo / Testing):</div>
+              <div class="persona-chips-row">
+                <button type="button" class="persona-chip active" data-role="coordinator" title="Training & Placement Officer">
+                  <span>🎓 TPO Coordinator</span>
+                </button>
+                <button type="button" class="persona-chip" data-role="admin" title="College Principal / Admin">
+                  <span>🏛️ College Admin</span>
+                </button>
+                <button type="button" class="persona-chip" data-role="student" title="Final Year Collegiate Student">
+                  <span>👨‍🎓 Student Gateway</span>
+                </button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- BOTTOM TRUST INDICATORS BAR -->
+    <footer class="trust-indicators-bar" aria-label="Trust and Security Indicators">
+      
+      <!-- Secure -->
+      <div class="trust-col">
+        <div class="trust-icon-box">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="trust-info">
+          <div class="trust-title">Secure</div>
+          <div class="trust-desc">Enterprise grade security</div>
+        </div>
+      </div>
+
+      <div class="trust-separator" aria-hidden="true"></div>
+
+      <!-- Trusted -->
+      <div class="trust-col">
+        <div class="trust-icon-box">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="trust-info">
+          <div class="trust-title">Trusted</div>
+          <div class="trust-desc">By 1000+ institutions</div>
+        </div>
+      </div>
+
+      <div class="trust-separator" aria-hidden="true"></div>
+
+      <!-- Connected -->
+      <div class="trust-col">
+        <div class="trust-icon-box">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <circle cx="19" cy="6" r="2"/>
+            <circle cx="5" cy="6" r="2"/>
+            <circle cx="19" cy="18" r="2"/>
+            <circle cx="5" cy="18" r="2"/>
+            <line x1="12" y1="9" x2="19" y2="6"/>
+            <line x1="12" y1="9" x2="5" y2="6"/>
+            <line x1="12" y1="15" x2="19" y2="18"/>
+            <line x1="12" y1="15" x2="5" y2="18"/>
+          </svg>
+        </div>
+        <div class="trust-info">
+          <div class="trust-title">Connected</div>
+          <div class="trust-desc">Building the future of hiring</div>
+        </div>
+      </div>
+
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       2. SPATIAL APPLICATION SHELL (FULL-WIDTH ENTERPRISE DASHBOARD)
+       (Rendered after successful authentication — Sidebar completely removed)
+       ========================================================================== -->
+  <div id="app-container" style="display: none;">
+    <!-- Universal Sticky Top Header with Full-Width Navigation & Account Controls -->
+    <header class="top-header">
+      <!-- Left: Approved HIERO Bridge Logo -->
+      <div class="top-header-brand">
         <div class="brand-logo-frame">
           <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge Logo" class="brand-logo-img">
-          <div class="brand-logo-pulse"></div>
         </div>
         <div class="brand-text-block">
           <div class="brand-title">HIERO <span>BRIDGE</span></div>
-          <span class="brand-subtitle">Spatial Talent Gateway</span>
+          <span class="brand-subtitle">SPATIAL TALENT GATEWAY</span>
         </div>
       </div>
 
-      <!-- Role Selector Dropdown -->
-      <div class="role-picker">
-        <div class="role-picker-label-row">
-          <span class="role-beacon"></span>
-          <label for="role-select-input">Active Workspace Persona</label>
-        </div>
-        <select id="role-select-input" class="role-select" onchange="app.switchRole(this.value)">
-          <option value="coordinator">Placement Coordinator</option>
-          <option value="admin">College Administrator</option>
-          <option value="student">Final-Year Student</option>
-        </select>
-      </div>
-
-      <!-- Navigation Section -->
-      <div class="nav-section-title">CORE OPERATING HUBS</div>
-      <ul class="nav-menu">
-        <li class="nav-item active" data-role="coordinator" onclick="app.switchRole('coordinator')">
-          <div class="nav-icon-wrap">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          </div>
-          <div class="nav-text-block">
-            <span class="nav-label">Placement Ops Hub</span>
-            <span class="nav-sub">Screening & Shortlists</span>
-          </div>
-          <span class="nav-active-pill"></span>
-        </li>
-
-        <li class="nav-item" data-role="admin" onclick="app.switchRole('admin')">
-          <div class="nav-icon-wrap">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-          </div>
-          <div class="nav-text-block">
-            <span class="nav-label">College Admin</span>
-            <span class="nav-sub">Verified Talent Pool</span>
-          </div>
-          <span class="nav-active-pill"></span>
-        </li>
-
-        <li class="nav-item" data-role="student" onclick="app.switchRole('student')">
-          <div class="nav-icon-wrap">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
-          </div>
-          <div class="nav-text-block">
-            <span class="nav-label">Student Gateway</span>
-            <span class="nav-sub">Drives & AI Mock</span>
-          </div>
-          <span class="nav-active-pill"></span>
-        </li>
-
-        <li class="nav-item nav-item-special" onclick="connectSyncModule.openConnectSyncModal()">
-          <div class="nav-icon-wrap icon-connect">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-          </div>
-          <div class="nav-text-block">
-            <span class="nav-label" style="color: var(--primary-light);">HIERO Connect</span>
-            <span class="nav-sub">Recruiter Pipeline Sync</span>
-          </div>
-        </li>
-      </ul>
-
-      <!-- Sidebar Spatial Footer -->
-      <div class="sidebar-footer">
-        <button class="quick-btn-reset" onclick="app.resetAllData()">
-          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          <span>Reset Master Data</span>
+      <!-- Center: Horizontal Workspace Navigation Tabs -->
+      <nav class="top-workspace-nav" aria-label="Workspace Hubs">
+        <button class="top-nav-tab active" data-role="coordinator" onclick="app.switchRole('coordinator')">
+          <span class="nav-tab-icon">📊</span>
+          <span class="nav-tab-label">Placement Ops Hub</span>
         </button>
-        <div class="system-tag-row">
-          <span class="system-status-indicator"></span>
-          <span>Unified Spatial Gateway • Port 2410</span>
+        <button class="top-nav-tab" data-role="admin" onclick="app.switchRole('admin')">
+          <span class="nav-tab-icon">🏛️</span>
+          <span class="nav-tab-label">College Admin</span>
+        </button>
+        <button class="top-nav-tab" data-role="student" onclick="app.switchRole('student')">
+          <span class="nav-tab-icon">🎓</span>
+          <span class="nav-tab-label">Student Gateway</span>
+        </button>
+        <button class="top-nav-tab" onclick="app.openConnectSyncDrawer()">
+          <span class="nav-tab-icon">🔄</span>
+          <span class="nav-tab-label">HIERO Connect</span>
+        </button>
+      </nav>
+
+      <!-- Right: 3D Ecosystem Matrix Pill & Integrated Account / Sign Out Control -->
+      <div class="top-header-actions">
+        <!-- 3D Ecosystem Modal Trigger -->
+        <button class="eco-pill" onclick="app.openEcosystemMapModal()" title="View Spatial Topology">
+          <div class="eco-pill-glow"></div>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-width="2" d="M3.6 9h16.8M3.6 15h16.8M12 3a14.8 14.8 0 010 18M12 3a14.8 14.8 0 000 18"/></svg>
+          <span>3D Ecosystem Matrix</span>
+        </button>
+
+        <!-- Integrated User Profile & Sign Out Control -->
+        <div class="user-profile-account-pill">
+          <div class="user-avatar-circle" id="header-user-avatar">TP</div>
+          <div class="user-profile-details">
+            <div class="user-full-name" id="header-user-name">Dr. Ramesh Kulkarni (TPO)</div>
+            <span class="user-role-label" id="header-role-pill">Placement Coordinator</span>
+          </div>
+          <button type="button" class="integrated-signout-btn" title="Sign Out to Welcome Screen" onclick="window.hieroAuth.logout()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Sign Out</span>
+          </button>
         </div>
       </div>
-    </aside>
+    </header>
 
-    <!-- Main Spatial Content Wrapper -->
+    <!-- Main Spatial Full-Width Viewport -->
     <div class="main-wrapper">
-      <!-- Top Spatial Header -->
-      <header class="top-header">
-        <div class="header-left">
-          <div class="current-institution">
-            <div class="inst-icon-shield">
-              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l8 4v6c0 5.55-3.84 10.74-8 12-4.16-1.26-8-6.45-8-12V6l8-4z"/></svg>
-            </div>
-            <div>
-              <div class="inst-eyebrow">ACCREDITED INSTITUTION</div>
-              <span id="header-inst-name" class="inst-name">National Institute of Technology, Warangal</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="header-right">
-          <!-- 3D Ecosystem Modal Trigger -->
-          <button class="eco-pill" onclick="app.openEcosystemMapModal()">
-            <div class="eco-pill-glow"></div>
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-width="2" d="M3.6 9h16.8M3.6 15h16.8M12 3a14.8 14.8 0 010 18M12 3a14.8 14.8 0 000 18"/></svg>
-            <span>3D Ecosystem Matrix</span>
-          </button>
-
-          <!-- User Persona Card -->
-          <div class="user-badge">
-            <div class="avatar" id="header-user-avatar">TP</div>
-            <div class="user-text">
-              <div class="user-name" id="header-user-name">Dr. Ramesh Kulkarni (TPO)</div>
-              <span class="role-pill" id="header-role-pill">Placement Coordinator</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <!-- Dynamic Role-Based View Containers -->
       <main id="main-content-body">
+        <!-- Clean, Minimal Accredited Institution Banner -->
+        <div class="institution-header-strip">
+          <div class="inst-strip-left">
+            <div class="inst-icon-shield">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l8 4v6c0 5.55-3.84 10.74-8 12-4.16-1.26-8-6.45-8-12V6l8-4z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="inst-category-label">ACCREDITED INSTITUTION</div>
+              <h2 class="inst-title-name" id="header-inst-name">National Institute of Technology, Warangal</h2>
+            </div>
+          </div>
+          <div class="inst-strip-right">
+            <button class="btn-inst-action" onclick="app.resetAllData()" title="Reset Master Data or Re-sync">
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Reset Master Data</span>
+            </button>
+          </div>
+        </div>
+
         <div id="coordinator-view-container"></div>
+        <div id="admin-view-container" style="display: none;"></div>
+        <div id="student-view-container" style="display: none;"></div>
+      </main>
+    </div>
         <div id="admin-view-container" style="display: none;"></div>
         <div id="student-view-container" style="display: none;"></div>
       </main>
     </div>
   </div>
 
-  <!-- Modal and Drawer Mount Point -->
-  <div id="modal-root"></div>
+  <!-- ==========================================================================
+       MODALS: FORGOT PASSWORD & SIGN UP
+       ========================================================================== -->
+  <!-- Forgot Password Modal -->
+  <div id="forgot-password-modal" class="hiero-modal" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-badge"><span class="badge-dot"></span> Account Recovery</div>
+          <h3 class="modal-title">Reset Your Password</h3>
+        </div>
+        <button type="button" class="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="forgot-password-form" class="modal-body">
+        <p class="modal-desc">Enter your institutional email address and we'll send a secure password reset link.</p>
+        <div class="form-group">
+          <label for="forgot-email-input" class="form-label sr-only">Institutional Email</label>
+          <div class="input-container">
+            <svg class="input-leading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <input type="email" id="forgot-email-input" class="form-input" placeholder="e.g. tpo@college.edu" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary-cta" style="margin-top: 20px;">
+          <span>Dispatch Reset Link</span>
+          <svg class="arrow-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </form>
+    </div>
+  </div>
 
-  <!-- Toast Notifications Container -->
-  <div id="toast-container"></div>
+  <!-- Sign Up Modal -->
+  <div id="signup-modal" class="hiero-modal" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-badge"><span class="badge-dot"></span> Institution Onboarding</div>
+          <h3 class="modal-title">Join HIERO Bridge</h3>
+        </div>
+        <button type="button" class="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="signup-form" class="modal-body">
+        <p class="modal-desc">Register your university, placement cell, or student profile to connect with top tech recruiters on HIERO Connect.</p>
+        <div class="form-group">
+          <label class="form-label sr-only">Full Name</label>
+          <div class="input-container">
+            <input type="text" class="form-input" placeholder="Your Full Name" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label sr-only">Institution / College Name</label>
+          <div class="input-container">
+            <input type="text" class="form-input" placeholder="College / University Name" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 14px;">
+          <label class="form-label sr-only">Email</label>
+          <div class="input-container">
+            <input type="email" class="form-input" placeholder="Official Institutional Email" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary-cta" style="margin-top: 20px;">
+          <span>Submit Registration Request</span>
+          <svg class="arrow-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications Mount Point -->
+  <div id="hiero-toast-container" class="hiero-toast-container"></div>
+
+  <!-- Modal and Drawer Mount Point for Hubs -->
+  <div id="modal-root"></div>
 
   <!-- Application Logic Modules -->
   <script src="js/state.js"></script>
@@ -208,6 +497,7 @@
   <script src="js/interview.js"></script>
   <script src="js/connect-sync.js"></script>
   <script src="js/particles.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

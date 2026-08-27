@@ -50,23 +50,33 @@ app.use('/uploads', express.static(uploadsDir));
 app.use('/css', (req, res, next) => { res.set('Cache-Control', 'no-store'); next(); }, express.static(path.join(__dirname, 'css')));
 app.use('/js', (req, res, next) => { res.set('Cache-Control', 'no-store'); next(); }, express.static(path.join(__dirname, 'js')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.use((req, res, next) => {
-  if (req.path.endsWith('.html')) res.set('Cache-Control', 'no-store');
-  next();
-}, express.static(__dirname));
 
 // === 4. Route HTML Entrypoints ===
-app.get('/academic-portal.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'academic-portal.html'));
-});
-
-app.get('/academic-portal', (req, res) => {
-  res.sendFile(path.join(__dirname, 'academic-portal.html'));
+app.get(['/apply', '/apply.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'apply.html'));
 });
 
 app.get('/', (req, res) => {
+  // If user opens legacy link ?view=apply, seamlessly redirect directly to /apply
+  if (req.query.view === 'apply') {
+    const oppId = req.query.oppId ? `?oppId=${encodeURIComponent(req.query.oppId)}` : '';
+    return res.redirect(302, `/apply${oppId}`);
+  }
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get(['/login', '/login.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get(['/academic-portal.html', '/academic-portal'], (req, res) => {
   res.sendFile(path.join(__dirname, 'academic-portal.html'));
 });
+
+app.use((req, res, next) => {
+  if (req.path.endsWith('.html')) res.set('Cache-Control', 'no-store');
+  next();
+}, express.static(__dirname, { index: false }));
 
 // Global Error Handler for API
 app.use((err, req, res, next) => {
