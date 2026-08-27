@@ -101,17 +101,35 @@ window.app = (function () {
     if (role === 'coordinator') {
       if (coordContainer) {
         coordContainer.style.display = 'block';
-        if (window.coordinatorModule) coordinatorModule.render();
+        if (window.coordinatorModule) {
+          if (typeof coordinatorModule.renderCoordinatorDashboard === 'function') {
+            coordinatorModule.renderCoordinatorDashboard();
+          } else if (typeof coordinatorModule.init === 'function') {
+            coordinatorModule.init();
+          }
+        }
       }
     } else if (role === 'admin') {
       if (adminContainer) {
         adminContainer.style.display = 'block';
-        if (window.adminModule) adminModule.render();
+        if (window.adminModule) {
+          if (typeof adminModule.renderAdminDashboard === 'function') {
+            adminModule.renderAdminDashboard();
+          } else if (typeof adminModule.init === 'function') {
+            adminModule.init();
+          }
+        }
       }
     } else if (role === 'student') {
       if (studentContainer) {
         studentContainer.style.display = 'block';
-        if (window.studentModule) studentModule.render();
+        if (window.studentModule) {
+          if (typeof studentModule.renderStudentDashboard === 'function') {
+            studentModule.renderStudentDashboard();
+          } else if (typeof studentModule.init === 'function') {
+            studentModule.init();
+          }
+        }
       }
     }
 
@@ -245,6 +263,7 @@ window.app = (function () {
   return {
     init,
     switchRole,
+    updateHeaderUserBadge,
     showToast,
     resetAllData,
     openEcosystemMapModal

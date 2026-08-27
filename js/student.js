@@ -15,6 +15,12 @@ window.studentModule = (function () {
 
   function setStudent(studentId) {
     currentStudentId = studentId;
+    if (window.bridgeStore && typeof window.bridgeStore.setActiveStudent === 'function') {
+      window.bridgeStore.setActiveStudent(studentId);
+    }
+    if (window.app && typeof window.app.updateHeaderUserBadge === 'function') {
+      window.app.updateHeaderUserBadge('student');
+    }
     renderStudentDashboard();
   }
 
@@ -530,6 +536,7 @@ window.studentModule = (function () {
 
   return {
     init,
+    render: renderStudentDashboard,
     setStudent,
     renderStudentDashboard,
     openApplyModal,

@@ -253,8 +253,8 @@ window.coordinatorModule = (function () {
                 </div>
 
                 <div class="skills-pill-wrap">
-                  ${o.requiredSkills.map(sk => `<span class="skill-pill matched">Req: ${sk}</span>`).join('')}
-                  ${(o.preferredSkills || []).slice(0, 2).map(sk => `<span class="skill-pill">Pref: ${sk}</span>`).join('')}
+                  ${o.requiredSkills.map(sk => `<span class="skill-pill matched"><span style="opacity: 0.7; font-size: 0.62rem; margin-right: 4px; font-weight: 800;">REQ</span>${sk}</span>`).join('')}
+                  ${(o.preferredSkills || []).slice(0, 2).map(sk => `<span class="skill-pill"><span style="opacity: 0.7; font-size: 0.62rem; margin-right: 4px; font-weight: 800;">PREF</span>${sk}</span>`).join('')}
                 </div>
               </div>
 
@@ -914,6 +914,7 @@ window.coordinatorModule = (function () {
 
   return {
     init,
+    render: renderCoordinatorDashboard,
     renderCoordinatorDashboard,
     setTab,
     renderFilteredOpps,

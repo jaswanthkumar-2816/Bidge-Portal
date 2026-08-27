@@ -404,6 +404,7 @@ const DEFAULT_STATE = {
 class BridgeStore {
   constructor() {
     this.listeners = [];
+    this.activeStudentId = 'STU-001';
     this.state = this.loadState();
   }
 
@@ -432,13 +433,8 @@ class BridgeStore {
 
   resetState() {
     this.state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    this.activeStudentId = 'STU-001';
     this.saveState();
-  }
-
-  notify() {
-    if (this.listeners && Array.isArray(this.listeners)) {
-      this.listeners.forEach(fn => fn(this.state));
-    }
   }
 
   subscribe(listener) {
@@ -449,10 +445,24 @@ class BridgeStore {
   }
 
   notify() {
-    this.listeners.forEach(fn => fn(this.state));
+    if (this.listeners && Array.isArray(this.listeners)) {
+      this.listeners.forEach(fn => fn(this.state));
+    }
   }
 
   // === Student Helpers ===
+  getActiveStudent() {
+    const student = this.getStudentById(this.activeStudentId);
+    if (student) return student;
+    const students = this.getStudents();
+    return students.length > 0 ? students[0] : null;
+  }
+
+  setActiveStudent(id) {
+    this.activeStudentId = id;
+    this.notify();
+  }
+
   getStudents() {
     return this.state.students || [];
   }

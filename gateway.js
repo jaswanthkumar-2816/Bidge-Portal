@@ -46,10 +46,14 @@ app.use('/api/connect', require('./backend/src/routes/connectSyncRoutes'));
 app.use('/uploads', express.static(uploadsDir));
 
 // === 3. Serve Frontend Assets (CSS, JS, Assets, Sample CSV) ===
-app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
+// Disable caching for development to prevent stale JS/CSS
+app.use('/css', (req, res, next) => { res.set('Cache-Control', 'no-store'); next(); }, express.static(path.join(__dirname, 'css')));
+app.use('/js', (req, res, next) => { res.set('Cache-Control', 'no-store'); next(); }, express.static(path.join(__dirname, 'js')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.use(express.static(__dirname));
+app.use((req, res, next) => {
+  if (req.path.endsWith('.html')) res.set('Cache-Control', 'no-store');
+  next();
+}, express.static(__dirname));
 
 // === 4. Route HTML Entrypoints ===
 app.get('/academic-portal.html', (req, res) => {

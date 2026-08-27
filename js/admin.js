@@ -790,6 +790,7 @@ window.adminModule = (function () {
 
   return {
     init,
+    render: renderAdminDashboard,
     renderAdminDashboard,
     filterStudentTable,
     toggleVerification,
