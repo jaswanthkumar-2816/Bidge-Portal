@@ -50,27 +50,6 @@ window.coordinatorModule = (function () {
           </p>
         </div>
 
-        <!-- 3D Interactive Ecosystem Canvas Frame -->
-        <div class="spatial-3d-wrapper">
-          <div class="spatial-3d-header">
-            <div class="spatial-3d-title-block">
-              <div class="kpi-icon-box" style="width: 34px; height: 34px;">🌐</div>
-              <div>
-                <div class="spatial-3d-title">Academia ↔ Talent ↔ Industry 3D Network</div>
-                <div class="spatial-3d-sub">Interactive WebGL spatial topology • Hover nodes for live telemetry metrics</div>
-              </div>
-            </div>
-            <div class="spatial-3d-controls">
-              <button class="btn-3d-ctrl" onclick="hieroEcosystem3D.toggleRotation()">
-                ↻ Toggle Orbit
-              </button>
-              <button class="btn-3d-ctrl" onclick="app.openEcosystemMapModal()">
-                ⛶ Expand Modal
-              </button>
-            </div>
-          </div>
-          <div id="dashboard-3d-ecosystem-mount"></div>
-        </div>
 
         <!-- Spatial 4-KPI Metric Grid -->
         <div class="kpi-spatial-grid">
@@ -139,12 +118,6 @@ window.coordinatorModule = (function () {
       </div>
     `;
 
-    // Mount Three.js 3D Ecosystem Canvas
-    setTimeout(() => {
-      if (window.hieroEcosystem3D) {
-        hieroEcosystem3D.init('dashboard-3d-ecosystem-mount', { height: 380 });
-      }
-    }, 50);
   }
 
   function renderPipelineTabs(opps) {

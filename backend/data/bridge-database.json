@@ -561,9 +561,9 @@
       "studentId": "STU-002",
       "appliedAt": "2026-08-23T09:00:00Z",
       "resumeUrl": "https://hiero.io/resumes/diya-patel-2026.pdf",
-      "status": "Applied",
-      "coordinatorNotes": "Top ranker in AIML (9.20 CGPA), published 3D U-Net project.",
-      "recruiterFeedback": null,
+      "status": "Sent to Recruiter",
+      "coordinatorNotes": "Transmitted by Placement Coordinator.",
+      "recruiterFeedback": "Under Recruiter Review",
       "interviewResult": null
     },
     {
@@ -599,6 +599,42 @@
       "oppId": "OPP-HC-2026-02",
       "studentId": "STU-001",
       "resumeUrl": "https://hiero.io/resumes/aarav-sharma-2026.pdf",
+      "notes": "Transmitted by Placement Coordinator."
+    },
+    {
+      "id": "APP-2026-0010",
+      "appliedAt": "2026-08-31T16:27:50.010Z",
+      "status": "Sent to Recruiter",
+      "coordinatorNotes": "Transmitted by Placement Coordinator.",
+      "recruiterFeedback": "Under Recruiter Review",
+      "interviewResult": null,
+      "oppId": "OPP-HC-2026-02",
+      "studentId": "STU-003",
+      "resumeUrl": "https://hiero.io/resumes/rohan-verma-2026.pdf",
+      "notes": "Transmitted by Placement Coordinator."
+    },
+    {
+      "id": "APP-2026-0012",
+      "appliedAt": "2026-08-31T16:27:50.012Z",
+      "status": "Sent to Recruiter",
+      "coordinatorNotes": "Transmitted by Placement Coordinator.",
+      "recruiterFeedback": "Under Recruiter Review",
+      "interviewResult": null,
+      "oppId": "OPP-HC-2026-02",
+      "studentId": "STU-005",
+      "resumeUrl": "https://hiero.io/resumes/vikram-singh-2026.pdf",
+      "notes": "Transmitted by Placement Coordinator."
+    },
+    {
+      "id": "APP-2026-0014",
+      "appliedAt": "2026-08-31T16:27:50.014Z",
+      "status": "Sent to Recruiter",
+      "coordinatorNotes": "Transmitted by Placement Coordinator.",
+      "recruiterFeedback": "Under Recruiter Review",
+      "interviewResult": null,
+      "oppId": "OPP-HC-2026-02",
+      "studentId": "STU-006",
+      "resumeUrl": "https://hiero.io/resumes/ananya-iyer-2026.pdf",
       "notes": "Transmitted by Placement Coordinator."
     }
   ]

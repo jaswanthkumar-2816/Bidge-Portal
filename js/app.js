@@ -84,7 +84,7 @@ window.app = (function () {
     const steps = [
       { pct: 25, msg: 'Initializing Spatial Gateway & Port 2410...' },
       { pct: 60, msg: 'Connecting Verified Talent Pool (NIT Warangal)...' },
-      { pct: 85, msg: 'Calibrating 3D Ecosystem Matrix...' },
+      { pct: 85, msg: 'Calibrating Talent Intelligence Engine...' },
       { pct: 100, msg: 'Spatial Operating Hub Ready.' }
     ];
 
@@ -232,80 +232,14 @@ window.app = (function () {
     }
   }
 
-  function openEcosystemMapModal() {
-    const modalHtml = `
-      <div class="modal-backdrop open" id="ecosystem-map-modal">
-        <div class="modal-content" style="max-width: 920px;">
-          <button class="modal-close" onclick="document.getElementById('ecosystem-map-modal').remove()">✕</button>
-          
-          <div style="text-align: center; margin-bottom: 1.5rem;">
-            <div class="hero-tag" style="margin-bottom: 0.5rem;">HIERO SPATIAL ARCHITECTURE</div>
-            <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff;">Ecosystem Placement Matrix</h2>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
-              Industry Creates Opportunity ──► Academia Filters & Shortlists ──► HIERO AI Evaluates & Upskills
-            </p>
-          </div>
 
-          <!-- 3D Ecosystem Visualization Mount -->
-          <div class="spatial-3d-wrapper" style="margin-bottom: 1.5rem;">
-            <div class="spatial-3d-header">
-              <div class="spatial-3d-title-block">
-                <div class="kpi-icon-box" style="width: 32px; height: 32px;">🌐</div>
-                <div>
-                  <div class="spatial-3d-title" style="font-size: 1rem;">Live 3D Topological Matrix</div>
-                  <div class="spatial-3d-sub">Hover over any node to inspect data channels</div>
-                </div>
-              </div>
-              <button class="btn-3d-ctrl" onclick="hieroEcosystem3D.toggleRotation()">
-                ↻ Toggle Orbit
-              </button>
-            </div>
-            <div id="modal-ecosystem-canvas-mount" style="height: 320px; cursor: grab;"></div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
-            <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.3); padding: 1.25rem; border-radius: var(--radius-md);">
-              <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--accent-cyan); font-weight: 800;">1. Industry Gateway</div>
-              <h4 style="font-size: 1.1rem; font-weight: 800; margin: 4px 0; color: #fff;">HIERO CONNECT</h4>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Recruiters create opportunities & receive shortlists</div>
-            </div>
-
-            <div style="background: rgba(0, 255, 135, 0.08); border: 1px solid rgba(0, 255, 135, 0.3); padding: 1.25rem; border-radius: var(--radius-md);">
-              <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--primary); font-weight: 800;">2. Academia Gateway</div>
-              <h4 style="font-size: 1.1rem; font-weight: 800; margin: 4px 0; color: #fff;">HIERO BRIDGE</h4>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Verified Talent Pool & Coordinator screening</div>
-            </div>
-
-            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1.25rem; border-radius: var(--radius-md);">
-              <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--success); font-weight: 800;">3. Evaluation & Practice</div>
-              <h4 style="font-size: 1.1rem; font-weight: 800; margin: 4px 0; color: #fff;">HIERO AI VOICE</h4>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Voice mock interview & 5-pillar scorecard</div>
-            </div>
-          </div>
-
-          <div style="display: flex; justify-content: flex-end;">
-            <button class="btn btn-primary" onclick="document.getElementById('ecosystem-map-modal').remove()">Close Architecture Matrix</button>
-          </div>
-        </div>
-      </div>
-    `;
-    document.getElementById('modal-root').innerHTML = modalHtml;
-
-    // Initialize 3D ecosystem in modal
-    setTimeout(() => {
-      if (window.hieroEcosystem3D) {
-        hieroEcosystem3D.init('modal-ecosystem-canvas-mount', { height: 320 });
-      }
-    }, 100);
-  }
 
   return {
     init,
     switchRole,
     updateHeaderUserBadge,
     showToast,
-    resetAllData,
-    openEcosystemMapModal
+    resetAllData
   };
 })();
 
