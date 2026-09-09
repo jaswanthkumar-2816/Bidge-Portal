@@ -414,6 +414,17 @@ window.adminModule = (function () {
 
   // === Advanced Filter Modal & Interactivity Handlers ===
   function openFilterModal() {
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'TALENT POOL FILTER',
+        title: 'CALIBRATING',
+        greenText: 'ADVANCED FILTERS',
+        subtext: 'MINIMUM CGPA SLIDER & BATCH COHORTS',
+        icon: '🔍',
+        duration: 1800
+      });
+    }
+
     tempFilters.minCGPA = activeFilters.minCGPA;
     tempFilters.academicYears = [...activeFilters.academicYears];
 
@@ -655,12 +666,25 @@ window.adminModule = (function () {
     activeFilters.academicYears = [...tempFilters.academicYears];
 
     closeModal('filter-modal');
-    filterStudentTable();
 
     const activeList = [];
     if (activeFilters.minCGPA > 0) activeList.push(`CGPA ≥ ${activeFilters.minCGPA.toFixed(1)}`);
     if (activeFilters.academicYears.length > 0) activeList.push(activeFilters.academicYears.join(' + '));
     
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'FILTERS APPLIED',
+        title: 'RECALIBRATING',
+        greenText: 'TALENT POOL STREAM',
+        subtext: activeList.length > 0 ? activeList.join(' • ') : 'SHOWING COMPLETE STUDENT TALENT POOL',
+        icon: '⚡',
+        duration: 1800,
+        onStageChange: () => filterStudentTable()
+      });
+    } else {
+      filterStudentTable();
+    }
+
     if (activeList.length > 0) {
       window.app.showToast(`Active Filters applied: ${activeList.join(', ')}`, 'success');
     } else {
@@ -675,7 +699,21 @@ window.adminModule = (function () {
     tempFilters.academicYears = [];
 
     closeModal('filter-modal');
-    filterStudentTable();
+
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'FILTERS RESET',
+        title: 'RESTORING',
+        greenText: 'COMPLETE TALENT POOL',
+        subtext: 'ALL CGPA SCORES & BATCH COHORTS ACTIVE',
+        icon: '🔄',
+        duration: 1800,
+        onStageChange: () => filterStudentTable()
+      });
+    } else {
+      filterStudentTable();
+    }
+
     window.app.showToast('All advanced filters reset. Complete talent pool restored.', 'info');
   }
 
@@ -760,6 +798,16 @@ window.adminModule = (function () {
 
   // === Modal Handlers ===
   function openCollegeModal() {
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'INSTITUTION CONFIG',
+        title: 'INITIALIZING',
+        greenText: 'CAMPUS SETTINGS',
+        subtext: 'INSTITUTION TIER & PLACEMENT CALIBRATION',
+        icon: '🏛️',
+        duration: 1800
+      });
+    }
     const college = window.bridgeStore.state.college;
     const modalHtml = `
       <div class="modal-backdrop open" id="college-modal">
@@ -816,6 +864,16 @@ window.adminModule = (function () {
   }
 
   function openAddDeptModal() {
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'ACADEMIC BRANCH',
+        title: 'REGISTERING',
+        greenText: 'NEW DEPARTMENT',
+        subtext: 'ACADEMIC BRANCH & COHORT ALLOCATION',
+        icon: '📚',
+        duration: 1800
+      });
+    }
     const modalHtml = `
       <div class="modal-backdrop open" id="dept-modal">
         <div class="modal-content" style="max-width: 480px;">
@@ -853,6 +911,16 @@ window.adminModule = (function () {
 
   // === Bulk Student CSV/JSON Import Engine with Live Validation ===
   function openImportModal() {
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'BULK IMPORT PIPELINE',
+        title: 'LOADING',
+        greenText: 'STUDENT IMPORT ENGINE',
+        subtext: 'CSV / JSON DATA VALIDATION PIPELINE',
+        icon: '📥',
+        duration: 1800
+      });
+    }
     const modalHtml = `
       <div class="modal-backdrop open" id="import-modal">
         <div class="modal-content" style="max-width: 750px;">
@@ -1101,6 +1169,16 @@ window.adminModule = (function () {
   }
 
   function openAddStudentModal() {
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'STUDENT ONBOARDING',
+        title: 'ONBOARDING',
+        greenText: 'STUDENT TALENT RECORD',
+        subtext: 'ACADEMIC VERIFICATION & PROFILE REGISTRATION',
+        icon: '🎓',
+        duration: 1800
+      });
+    }
     const depts = window.bridgeStore.state.college.departments;
     const modalHtml = `
       <div class="modal-backdrop open" id="add-student-modal">
@@ -1192,6 +1270,17 @@ window.adminModule = (function () {
   function viewStudentProfile(id) {
     const student = window.bridgeStore.getStudentById(id);
     if (!student) return;
+
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'TALENT DOSSIER',
+        title: 'ACCESSING DOSSIER FOR',
+        greenText: `${student.name.toUpperCase()}`,
+        subtext: `${student.department} • CGPA ${Number(student.cgpa).toFixed(2)} • VERIFIED POOL`,
+        icon: '👤',
+        duration: 1800
+      });
+    }
 
     const state = window.bridgeStore ? window.bridgeStore.state : {};
     const studentApps = (state.applications || []).filter(a => 

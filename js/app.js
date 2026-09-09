@@ -56,6 +56,7 @@ window.app = (function () {
 
   async function init() {
     runSplashLogoReveal();
+    initGlobalButtonInteractions();
     const appContainer = document.getElementById('app-container');
     document.body.classList.add('authenticated');
 
@@ -132,7 +133,85 @@ window.app = (function () {
     }, 180);
   }
 
-  function switchRole(role) {
+  let transitionTimeout = null;
+
+  // High-Impact Spatial Navigation HUD & Warp Transition
+  function triggerSpatialTransition(options = {}) {
+    const {
+      tag = 'PAGE TRANSITION',
+      title = 'NAVIGATING TO',
+      greenText = 'WORKSPACE',
+      subtext = 'SPATIAL TALENT PIPELINE • SYNCHRONIZED',
+      icon = '⚡',
+      duration = 1800,
+      onStageChange = null
+    } = options;
+
+    const overlay = document.getElementById('spatial-transition-overlay');
+    const hudBadge = document.getElementById('hud-badge-tag');
+    const hudTitle = document.getElementById('hud-title');
+    const hudSub = document.getElementById('hud-sub');
+    const hudIcon = document.getElementById('hud-icon-ring');
+    const hudProgress = document.getElementById('hud-progress-fill');
+
+    if (hudBadge) hudBadge.textContent = tag;
+    if (hudTitle) hudTitle.innerHTML = `${title} <span class="accent-green">${greenText}</span>`;
+    if (hudSub) hudSub.textContent = subtext;
+    if (hudIcon) hudIcon.textContent = icon;
+
+    if (hudProgress) {
+      hudProgress.style.animation = 'none';
+      void hudProgress.offsetWidth; // Force reflow
+      hudProgress.style.animation = `hudProgressFill ${duration / 1000}s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
+    }
+
+    if (overlay) {
+      overlay.classList.remove('active');
+      void overlay.offsetWidth; // Force reflow
+      overlay.classList.add('active');
+    }
+
+    if (typeof onStageChange === 'function') {
+      setTimeout(() => {
+        onStageChange();
+      }, 70);
+    }
+
+    if (transitionTimeout) clearTimeout(transitionTimeout);
+    transitionTimeout = setTimeout(() => {
+      if (overlay) overlay.classList.remove('active');
+    }, duration);
+  }
+
+  // Universal Button Click Ripple Wave Effect
+  function initGlobalButtonInteractions() {
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button, .btn, .top-nav-tab, .pipeline-tab, .btn-card-action, .btn-master-resume, .btn-inst-action, .btn-filter-trigger, .badge-verified-pill, .badge');
+      if (!btn) return;
+
+      btn.classList.add('btn-ripple-host');
+
+      const ripple = document.createElement('span');
+      ripple.className = 'spatial-click-ripple';
+
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+
+      btn.appendChild(ripple);
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 550);
+    });
+  }
+
+  function switchRole(role, skipAnimation = false) {
     currentRole = role;
 
     // Update Role Selector dropdown in sidebar
@@ -151,53 +230,104 @@ window.app = (function () {
     // Update Header User Badge according to Role Persona
     updateHeaderUserBadge(role);
 
-    // Hide all view containers
     const coordContainer = document.getElementById('coordinator-view-container');
     const adminContainer = document.getElementById('admin-view-container');
     const studentContainer = document.getElementById('student-view-container');
 
-    if (coordContainer) coordContainer.style.display = 'none';
-    if (adminContainer) adminContainer.style.display = 'none';
-    if (studentContainer) studentContainer.style.display = 'none';
+    const roleConfig = {
+      coordinator: {
+        tag: 'PAGE NAVIGATION',
+        title: 'NAVIGATING TO',
+        greenText: 'PLACEMENT OPS HUB',
+        subtext: 'DISPATCH & RECRUITER PIPELINE • LIVE',
+        icon: '📊'
+      },
+      admin: {
+        tag: 'PAGE NAVIGATION',
+        title: 'NAVIGATING TO',
+        greenText: 'COLLEGE ADMIN CONSOLE',
+        subtext: 'INSTITUTION & VERIFIED TALENT POOL • LIVE',
+        icon: '🏛️'
+      },
+      student: {
+        tag: 'PAGE NAVIGATION',
+        title: 'NAVIGATING TO',
+        greenText: 'STUDENT CAREER GATEWAY',
+        subtext: 'VERIFIED OPPORTUNITIES & DOSSIER • LIVE',
+        icon: '🎓'
+      }
+    };
 
-    // Render corresponding module view
-    if (role === 'coordinator') {
-      if (coordContainer) {
-        coordContainer.style.display = 'block';
-        if (window.coordinatorModule) {
-          if (typeof coordinatorModule.renderCoordinatorDashboard === 'function') {
-            coordinatorModule.renderCoordinatorDashboard();
-          } else if (typeof coordinatorModule.init === 'function') {
-            coordinatorModule.init();
+    const cfg = roleConfig[role] || roleConfig.coordinator;
+
+    const executeViewSwitch = () => {
+      // Hide all view containers
+      if (coordContainer) coordContainer.style.display = 'none';
+      if (adminContainer) adminContainer.style.display = 'none';
+      if (studentContainer) studentContainer.style.display = 'none';
+
+      // Render corresponding module view
+      if (role === 'coordinator') {
+        if (coordContainer) {
+          coordContainer.style.display = 'block';
+          coordContainer.classList.remove('spatial-view-enter');
+          void coordContainer.offsetWidth;
+          coordContainer.classList.add('spatial-view-enter');
+          if (window.coordinatorModule) {
+            if (typeof coordinatorModule.renderCoordinatorDashboard === 'function') {
+              coordinatorModule.renderCoordinatorDashboard();
+            } else if (typeof coordinatorModule.init === 'function') {
+              coordinatorModule.init();
+            }
+          }
+        }
+      } else if (role === 'admin') {
+        if (adminContainer) {
+          adminContainer.style.display = 'block';
+          adminContainer.classList.remove('spatial-view-enter');
+          void adminContainer.offsetWidth;
+          adminContainer.classList.add('spatial-view-enter');
+          if (window.adminModule) {
+            if (typeof adminModule.renderAdminDashboard === 'function') {
+              adminModule.renderAdminDashboard();
+            } else if (typeof adminModule.init === 'function') {
+              adminModule.init();
+            }
+          }
+        }
+      } else if (role === 'student') {
+        if (studentContainer) {
+          studentContainer.style.display = 'block';
+          studentContainer.classList.remove('spatial-view-enter');
+          void studentContainer.offsetWidth;
+          studentContainer.classList.add('spatial-view-enter');
+          if (window.studentModule) {
+            if (typeof studentModule.renderStudentDashboard === 'function') {
+              studentModule.renderStudentDashboard();
+            } else if (typeof studentModule.init === 'function') {
+              studentModule.init();
+            }
           }
         }
       }
-    } else if (role === 'admin') {
-      if (adminContainer) {
-        adminContainer.style.display = 'block';
-        if (window.adminModule) {
-          if (typeof adminModule.renderAdminDashboard === 'function') {
-            adminModule.renderAdminDashboard();
-          } else if (typeof adminModule.init === 'function') {
-            adminModule.init();
-          }
-        }
-      }
-    } else if (role === 'student') {
-      if (studentContainer) {
-        studentContainer.style.display = 'block';
-        if (window.studentModule) {
-          if (typeof studentModule.renderStudentDashboard === 'function') {
-            studentModule.renderStudentDashboard();
-          } else if (typeof studentModule.init === 'function') {
-            studentModule.init();
-          }
-        }
-      }
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    if (!skipAnimation) {
+      triggerSpatialTransition({
+        tag: cfg.tag,
+        title: cfg.title,
+        greenText: cfg.greenText,
+        subtext: cfg.subtext,
+        icon: cfg.icon,
+        duration: 1800,
+        onStageChange: executeViewSwitch
+      });
+    } else {
+      executeViewSwitch();
     }
-
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function updateHeaderUserBadge(role) {
@@ -356,6 +486,7 @@ window.app = (function () {
   return {
     init,
     switchRole,
+    triggerSpatialTransition,
     switchRoleFromDropdown,
     toggleProfileDropdown,
     closeProfileDropdown,

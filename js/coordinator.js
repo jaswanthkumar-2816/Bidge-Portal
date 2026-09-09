@@ -256,6 +256,17 @@ window.coordinatorModule = (function () {
     const opp = window.bridgeStore.getOpportunityById(oppId);
     if (!opp) return;
 
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'GATEWAY GENERATION',
+        title: 'GENERATING APPLICATION GATEWAY',
+        greenText: `FOR ${opp.company.toUpperCase()}`,
+        subtext: 'SECURING DIRECT STUDENT APPLICATION LINK',
+        icon: '🔗',
+        duration: 1800
+      });
+    }
+
     const fullUrl = `${window.location.origin}/?view=apply&oppId=${opp.id}`;
 
     const modalHtml = `
@@ -517,7 +528,36 @@ window.coordinatorModule = (function () {
     filterState.status = 'ALL';
     filterState.fitOnly = false;
 
-    renderCandidateScreeningScreen(opp);
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'CANDIDATE SCREENING',
+        title: 'OPENING SCREENING MATRIX',
+        greenText: `• ${opp.company.toUpperCase()}`,
+        subtext: `${opp.title} • CALIBRATING RECRUITER EXPECTATIONS`,
+        icon: '⚡',
+        duration: 1800,
+        onStageChange: () => renderCandidateScreeningScreen(opp)
+      });
+    } else {
+      renderCandidateScreeningScreen(opp);
+    }
+  }
+
+  function returnToDashboard() {
+    selectedOppId = null;
+    if (window.app && typeof window.app.triggerSpatialTransition === 'function') {
+      window.app.triggerSpatialTransition({
+        tag: 'PAGE NAVIGATION',
+        title: 'RETURNING TO',
+        greenText: 'PLACEMENT OPS HUB',
+        subtext: 'DISPATCH & RECRUITER PIPELINE • SYNCHRONIZED',
+        icon: '📊',
+        duration: 1800,
+        onStageChange: () => renderCoordinatorDashboard()
+      });
+    } else {
+      renderCoordinatorDashboard();
+    }
   }
 
   function renderCandidateScreeningScreen(opp) {
@@ -564,10 +604,10 @@ window.coordinatorModule = (function () {
     });
 
     container.innerHTML = `
-      <div class="page-container">
+      <div class="page-container spatial-view-enter">
         <!-- Back Navigation & Header -->
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-          <button class="btn btn-secondary btn-sm" onclick="coordinatorModule.renderCoordinatorDashboard()">
+          <button class="btn btn-secondary btn-sm" onclick="coordinatorModule.returnToDashboard()">
             ← Back to Opportunities
           </button>
           <div style="display: flex; gap: 8px;">
@@ -1049,6 +1089,7 @@ window.coordinatorModule = (function () {
     broadcastToBatch,
     openStudentPreview,
     openCandidateScreening,
+    returnToDashboard,
     updateCGPAFilter,
     updateDeptFilter,
     updateProjectsFilter,
