@@ -264,7 +264,7 @@ window.coordinatorModule = (function () {
         subtext: 'SECURING DIRECT STUDENT APPLICATION LINK',
         statusMsg: 'CRYPTOGRAPHICALLY ENCRYPTING OPPORTUNITY LINK...',
         icon: '🔗',
-        duration: 3000
+        duration: 2000
       });
     }
 
@@ -537,7 +537,7 @@ window.coordinatorModule = (function () {
         subtext: `${opp.title} • CALIBRATING RECRUITER EXPECTATIONS`,
         statusMsg: 'CALCULATING CANDIDATE FIT SCORES & EXPECTATION THRESHOLDS...',
         icon: '⚡',
-        duration: 3000,
+        duration: 2000,
         onStageChange: () => renderCandidateScreeningScreen(opp)
       });
     } else {
@@ -555,7 +555,7 @@ window.coordinatorModule = (function () {
         subtext: 'DISPATCH & RECRUITER PIPELINE • SYNCHRONIZED',
         statusMsg: 'RECONNECTING TO OPPORTUNITY PIPELINE...',
         icon: '📊',
-        duration: 3000,
+        duration: 2000,
         onStageChange: () => renderCoordinatorDashboard()
       });
     } else {

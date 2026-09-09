@@ -7142,7 +7142,7 @@ body.student-portal-body {
 }
 
 .spatial-transition-overlay.active .spatial-transition-laser {
-  animation: laserSweepTrack 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: laserSweepTrack 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Central Stage Container */

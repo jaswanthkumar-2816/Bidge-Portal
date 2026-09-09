@@ -422,7 +422,7 @@ window.adminModule = (function () {
         subtext: 'MINIMUM CGPA SLIDER & BATCH COHORTS',
         statusMsg: 'LOADING ACADEMIC FILTER CRITERIA & COHORTS...',
         icon: '🔍',
-        duration: 3000
+        duration: 2000
       });
     }
 
@@ -680,7 +680,7 @@ window.adminModule = (function () {
         subtext: activeList.length > 0 ? activeList.join(' • ') : 'SHOWING COMPLETE STUDENT TALENT POOL',
         statusMsg: 'COMPUTING REAL-TIME STUDENT FILTER MATCHES...',
         icon: '⚡',
-        duration: 3000,
+        duration: 2000,
         onStageChange: () => filterStudentTable()
       });
     } else {
@@ -710,7 +710,7 @@ window.adminModule = (function () {
         subtext: 'ALL CGPA SCORES & BATCH COHORTS ACTIVE',
         statusMsg: 'RESTORING ENTIRE VERIFIED STUDENT COHORT...',
         icon: '🔄',
-        duration: 3000,
+        duration: 2000,
         onStageChange: () => filterStudentTable()
       });
     } else {
@@ -809,7 +809,7 @@ window.adminModule = (function () {
         subtext: 'INSTITUTION TIER & PLACEMENT CALIBRATION',
         statusMsg: 'RETRIEVING INSTITUTION CONFIGURATION MATRIX...',
         icon: '🏛️',
-        duration: 3000
+        duration: 2000
       });
     }
     const college = window.bridgeStore.state.college;
@@ -876,7 +876,7 @@ window.adminModule = (function () {
         subtext: 'ACADEMIC BRANCH & COHORT ALLOCATION',
         statusMsg: 'PREPARING DEPARTMENT REGISTRATION SCHEMA...',
         icon: '📚',
-        duration: 3000
+        duration: 2000
       });
     }
     const modalHtml = `
@@ -924,7 +924,7 @@ window.adminModule = (function () {
         subtext: 'CSV / JSON DATA VALIDATION PIPELINE',
         statusMsg: 'CALIBRATING BATCH VALIDATION PARSER...',
         icon: '📥',
-        duration: 3000
+        duration: 2000
       });
     }
     const modalHtml = `
@@ -1183,7 +1183,7 @@ window.adminModule = (function () {
         subtext: 'ACADEMIC VERIFICATION & PROFILE REGISTRATION',
         statusMsg: 'COMPOSING SECURE STUDENT TALENT PROFILE...',
         icon: '🎓',
-        duration: 3000
+        duration: 2000
       });
     }
     const depts = window.bridgeStore.state.college.departments;
@@ -1286,7 +1286,7 @@ window.adminModule = (function () {
         subtext: `${student.department} • CGPA ${Number(student.cgpa).toFixed(2)} • VERIFIED POOL`,
         statusMsg: 'COMPILING VERIFIED COMPETENCY & APPLICATION DOSSIER...',
         icon: '👤',
-        duration: 3000
+        duration: 2000
       });
     }
 

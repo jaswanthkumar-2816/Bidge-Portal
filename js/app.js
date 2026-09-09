@@ -136,7 +136,7 @@ window.app = (function () {
   let transitionTimeout = null;
   let transitionDismissTimeout = null;
 
-  // Full-Screen Spatial Cyber-HUD Route Transition (Logo-free, 3-Second Precision HUD)
+  // Full-Screen Spatial Cyber-HUD Route Transition (Logo-free, 2-Second Precision HUD)
   function triggerSpatialTransition(options = {}) {
     const {
       tag = 'PAGE TRANSITION',
@@ -145,7 +145,7 @@ window.app = (function () {
       subtext = 'SPATIAL TALENT PIPELINE • SYNCHRONIZED',
       statusMsg = 'SYNCHRONIZING SPATIAL DATA MATRIX...',
       icon = '⚡',
-      duration = 3000,
+      duration = 2000,
       onStageChange = null
     } = options;
 
@@ -349,7 +349,7 @@ window.app = (function () {
         subtext: cfg.subtext,
         statusMsg: cfg.statusMsg,
         icon: cfg.icon,
-        duration: 3000,
+        duration: 2000,
         onStageChange: executeViewSwitch
       });
     } else {
