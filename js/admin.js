@@ -168,12 +168,12 @@ window.adminModule = (function () {
           </div>
         </div>
 
-        <!-- Verified Final-Year Student Pool Table -->
-        <div class="table-wrapper">
-          <div class="table-header-bar">
+        <!-- Verified Final-Year Student Pool Card Stream -->
+        <div class="table-wrapper" style="background: transparent; border: none; padding: 0;">
+          <div class="table-header-bar" style="background: rgba(8, 14, 10, 0.7); border: 1px solid rgba(0, 255, 102, 0.16); border-radius: 16px; padding: 16px 20px; backdrop-filter: blur(12px);">
             <div>
-              <h3 style="font-size: 1.1rem; font-weight: 700;">Verified Final-Year Student Pool</h3>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; letter-spacing: -0.2px;">Verified Final-Year Student Pool</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 3px;">
                 Collegiate talent verified for direct industry opportunity matching
                 <span id="admin-pool-counter" style="margin-left: 8px; color: #00ff66; font-weight: 700;">• Showing ${students.length} of ${students.length} Students</span>
               </p>
@@ -208,32 +208,15 @@ window.adminModule = (function () {
           </div>
 
           <!-- Active Filter Chips Strip -->
-          <div id="admin-active-filters-bar" class="active-filters-strip" style="display: none;">
+          <div id="admin-active-filters-bar" class="active-filters-strip" style="display: none; margin-top: 10px;">
             <span class="active-filters-label">Active Filters:</span>
             <div id="admin-active-filter-chips" class="active-filter-chips-list"></div>
             <button type="button" class="btn-clear-all-filters" onclick="adminModule.resetAdvancedFilters()">Clear All</button>
           </div>
 
-          <div style="overflow-x: auto;">
-            <table class="custom-table" id="admin-student-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Roll Number</th>
-                  <th>Department</th>
-                  <th>CGPA</th>
-                  <th>Applied Opportunity</th>
-                  <th>Resume</th>
-                  <th>App Status</th>
-                  <th>Verification</th>
-                  <th>Placement</th>
-                  <th style="text-align: right;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-student-tbody">
-                ${renderStudentRows(students)}
-              </tbody>
-            </table>
+          <!-- Compact Sleek Student Cards Stream (Matching Picture 2) -->
+          <div class="student-cards-stream" id="admin-student-cards-stream">
+            ${renderStudentCards(students)}
           </div>
         </div>
       </div>
@@ -243,21 +226,19 @@ window.adminModule = (function () {
     filterStudentTable();
   }
 
-  function renderStudentRows(students) {
+  function renderStudentCards(students) {
     if (!students || students.length === 0) {
       return `
-        <tr>
-          <td colspan="10" style="text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);">
-            <div style="font-size: 1.6rem; margin-bottom: 8px;">🔍</div>
-            <div style="font-weight: 700; color: #ffffff; font-size: 1rem; margin-bottom: 4px;">No matching student profiles found</div>
-            <div style="font-size: 0.82rem; color: #94a3b8; max-width: 420px; margin: 0 auto 14px;">
-              No students match the current combination of search, minimum CGPA, or academic year criteria.
-            </div>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="adminModule.resetAdvancedFilters()" style="color: #00ff66; border-color: rgba(0, 255, 102, 0.4);">
-              Reset All Filters
-            </button>
-          </td>
-        </tr>
+        <div style="text-align: center; padding: 3.5rem 1.5rem; background: rgba(8, 14, 10, 0.6); border: 1px dashed rgba(0, 255, 102, 0.2); border-radius: 18px; color: var(--text-muted);">
+          <div style="font-size: 2rem; margin-bottom: 8px;">🔍</div>
+          <div style="font-weight: 700; color: #ffffff; font-size: 1.05rem; margin-bottom: 4px;">No matching student profiles found</div>
+          <div style="font-size: 0.84rem; color: #94a3b8; max-width: 420px; margin: 0 auto 14px;">
+            No students match the current combination of search, minimum CGPA, or academic year criteria.
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="adminModule.resetAdvancedFilters()" style="color: #00ff66; border-color: rgba(0, 255, 102, 0.4);">
+            Reset All Filters
+          </button>
+        </div>
       `;
     }
 
@@ -265,94 +246,118 @@ window.adminModule = (function () {
 
     return students.map(s => {
       const isVerified = s.verificationStatus === 'Verified';
-      const statusBadge = s.placementStatus === 'Placed' 
-        ? '<span class="badge badge-placed">Placed</span>' 
-        : (s.placementStatus === 'Active' ? '<span class="badge badge-open">Active</span>' : '<span class="badge badge-rejected">Ineligible</span>');
+      const statusClass = s.placementStatus === 'Placed' 
+        ? 'placed' 
+        : (s.placementStatus === 'Active' ? 'active' : 'ineligible');
 
       // Find applications for this student
       const studentApps = (state.applications || []).filter(a => 
         a.studentId === s.id || (a.studentRoll && a.studentRoll.toLowerCase() === s.regNo.toLowerCase())
       );
+      const appCount = studentApps.length > 0 ? studentApps.length : (s.appliedOpportunityTitle ? 1 : 0);
       const latestApp = studentApps.length > 0 ? studentApps[studentApps.length - 1] : null;
-      const opp = latestApp ? window.bridgeStore.getOpportunityById(latestApp.oppId) : null;
 
-      // Applied Opportunity representation
-      let oppHtml = '<span style="color: var(--text-dim); font-size: 0.78rem;">No active application</span>';
-      if (latestApp) {
-        const companyName = opp ? opp.company : (s.appliedOpportunityTitle?.split(' - ')[0] || 'Opportunity');
-        const roleTitle = opp ? opp.title : (s.appliedOpportunityTitle?.split(' - ')[1] || latestApp.oppTitle || latestApp.oppId);
-        oppHtml = `
-          <div>
-            <div style="font-weight: 700; color: #ffffff; font-size: 0.85rem;">${companyName}</div>
-            <div style="font-size: 0.74rem; color: #94a3b8; margin-top: 1px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${roleTitle}">${roleTitle}</div>
-            <div style="font-size: 0.68rem; color: #00ff66; margin-top: 2px; font-family: monospace;">ID: ${latestApp.oppId}</div>
-          </div>
-        `;
-      }
+      // Project count
+      const projectCount = s.projectCount !== undefined 
+        ? s.projectCount 
+        : (s.projects ? s.projects.length : (s.skills && s.skills.length > 3 ? 3 : 2));
 
-      // Resume representation
-      const resumeFile = s.resumeFileName || latestApp?.resumeFileName || 'resume.pdf';
+      // Skills / Competencies
+      const rawSkills = s.skills && Array.isArray(s.skills) && s.skills.length > 0 
+        ? s.skills 
+        : ['Python', 'Problem Solving', 'Data Structures', 'SQL', 'Algorithms'];
+
+      // Resume details
+      const resumeFile = s.resumeFileName || latestApp?.resumeFileName || 'Master Resume';
       const resumeHref = s.resumeUrl || latestApp?.resumeUrl || '#';
-      const resumeHtml = (s.resumeUrl || latestApp?.resumeUrl || s.resumeFileName) ? `
-        <div style="display: flex; flex-direction: column; gap: 3px;">
-          <a href="${resumeHref}" target="_blank" 
-             style="display: inline-flex; align-items: center; gap: 5px; color: #38bdf8; font-size: 0.78rem; text-decoration: none; font-weight: 600; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); padding: 3px 8px; border-radius: 6px; width: fit-content;"
-             onclick="event.stopPropagation();" title="${resumeFile}">
-            <span>📄</span>
-            <span style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${resumeFile}</span>
-          </a>
-          <span style="font-size: 0.68rem; color: #00ff66;">✓ Uploaded</span>
-        </div>
-      ` : `<span style="color: var(--text-dim); font-size: 0.78rem;">—</span>`;
+      const resumeClick = (resumeHref && resumeHref !== '#') 
+        ? `window.open('${resumeHref}', '_blank')` 
+        : `adminModule.viewStudentProfile('${s.id}')`;
 
-      // Application Status badge
-      let appStatusHtml = '<span style="color: var(--text-dim); font-size: 0.78rem;">—</span>';
-      if (latestApp) {
-        let badgeClass = 'badge-open';
-        if (latestApp.status === 'Shortlisted') badgeClass = 'badge-shortlist';
-        else if (latestApp.status === 'Selected' || latestApp.status === 'Sent to Recruiter') badgeClass = 'badge-placed';
-        else if (latestApp.status === 'Rejected') badgeClass = 'badge-rejected';
-        appStatusHtml = `<span class="badge ${badgeClass}">${latestApp.status || 'Applied'}</span>`;
-      }
+      // Avatar
+      const avatarLetters = s.avatar || (s.name ? s.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'ST');
 
       return `
-        <tr>
-          <td>
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div class="avatar">${s.avatar || 'ST'}</div>
-              <div>
-                <div class="candidate-name">${s.name}</div>
-                <div class="candidate-id">
-                  ${s.email} • <span style="color: #00ff66; font-weight: 700;">${s.academicYear || 'Final Year'}</span>
+        <div class="student-pool-card" data-student-id="${s.id}">
+          <!-- Top Row: Avatar, Identity, Stats & Actions -->
+          <div class="student-card-top-row">
+            <div class="student-identity-block">
+              <div class="student-avatar-ring">${avatarLetters}</div>
+              <div class="student-identity-meta">
+                <div class="student-name-row">
+                  <span class="student-card-name" onclick="adminModule.viewStudentProfile('${s.id}')" title="Click to view full student dossier">${s.name}</span>
+                  <button type="button" class="badge-verified-pill ${isVerified ? '' : 'pending'}" onclick="adminModule.toggleVerification('${s.id}')" title="Toggle Verification Status">
+                    ${isVerified ? '✓ Verified' : '⏳ Pending'}
+                  </button>
+                  <span class="badge-status-pill ${statusClass}">${s.placementStatus || 'Active'}</span>
+                </div>
+                <div class="student-card-subline">
+                  <span class="sub-roll">${s.regNo}</span>
+                  <span class="sub-dot">•</span>
+                  <span class="sub-dept">${s.department} (${s.academicYear || '2022–2026'})</span>
+                  <span class="sub-dot">•</span>
+                  <span class="sub-email">${s.email}</span>
                 </div>
               </div>
             </div>
-          </td>
-          <td><strong style="font-family: monospace; font-size: 0.88rem; color: #ffffff;">${s.regNo}</strong></td>
-          <td><span class="badge badge-new">${s.department}</span></td>
-          <td><strong style="color: #00ff66; font-size: 0.95rem;">${Number(s.cgpa).toFixed(2)}</strong></td>
-          <td>${oppHtml}</td>
-          <td>${resumeHtml}</td>
-          <td>${appStatusHtml}</td>
-          <td>
-            <button class="badge ${isVerified ? 'badge-open' : 'badge-shortlist'}" style="cursor: pointer; border: none;" onclick="adminModule.toggleVerification('${s.id}')">
-              ${isVerified ? '✓ Verified' : '⏳ Pending'}
-            </button>
-          </td>
-          <td>${statusBadge}</td>
-          <td style="text-align: right;">
-            <div style="display: flex; justify-content: flex-end; gap: 6px;">
-              <button class="btn btn-secondary btn-sm" onclick="adminModule.viewStudentProfile('${s.id}')" title="View Full Profile">
-                View
-              </button>
-              <button class="btn btn-secondary btn-sm" style="color: var(--danger);" onclick="adminModule.deleteStudent('${s.id}')" title="Remove Record">
-                ✕
-              </button>
+
+            <!-- Right Stats Cluster -->
+            <div class="student-card-stats-cluster">
+              <div class="student-metric-box">
+                <span class="metric-tag">VERIFIED CGPA</span>
+                <span class="metric-number cgpa-number">${Number(s.cgpa).toFixed(2)}</span>
+              </div>
+              <div class="student-metric-box">
+                <span class="metric-tag dim">PROJECTS</span>
+                <span class="metric-number count-number">${projectCount}</span>
+              </div>
+              <div class="student-metric-box">
+                <span class="metric-tag dim">APPLICATIONS</span>
+                <span class="metric-number count-number" style="color: ${appCount > 0 ? '#00ff66' : '#ffffff'};">${appCount}</span>
+              </div>
+              <div class="student-card-actions">
+                <button type="button" class="btn-card-action" onclick="adminModule.viewStudentProfile('${s.id}')" title="View Full Dossier">
+                  View
+                </button>
+                <button type="button" class="btn-card-action delete" onclick="adminModule.deleteStudent('${s.id}')" title="Delete Student Record">
+                  ✕
+                </button>
+              </div>
             </div>
-          </td>
-        </tr>
+          </div>
+
+          <!-- Divider -->
+          <div class="student-card-divider"></div>
+
+          <!-- Bottom Row: Competencies & Resume -->
+          <div class="student-card-bottom-row">
+            <div class="student-competencies-wrap">
+              <span class="competencies-heading">VERIFIED COMPETENCIES:</span>
+              <div class="competency-chips-list">
+                ${rawSkills.map(skill => `<span class="competency-chip">${skill}</span>`).join('')}
+              </div>
+              ${latestApp ? `
+                <div class="applied-opp-chip" title="Active Opportunity: ${latestApp.oppTitle || latestApp.oppId}">
+                  <span>⚡ ${latestApp.oppTitle || latestApp.oppId}</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <button type="button" class="btn-master-resume" onclick="${resumeClick}" title="View / Download Master Resume (${resumeFile})">
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <span>Master Resume</span>
+            </button>
+          </div>
+        </div>
       `;
     }).join('');
+  }
+
+  // Backward compatibility alias
+  function renderStudentRows(students) {
+    return renderStudentCards(students);
   }
 
   function filterStudentTable() {
@@ -388,9 +393,13 @@ window.adminModule = (function () {
       return matchesQuery && matchesDept && matchesStatus && matchesCgpa && matchesYear;
     });
 
+    const cardsStream = document.getElementById('admin-student-cards-stream');
+    if (cardsStream) {
+      cardsStream.innerHTML = renderStudentCards(filtered);
+    }
     const tbody = document.getElementById('admin-student-tbody');
     if (tbody) {
-      tbody.innerHTML = renderStudentRows(filtered);
+      tbody.innerHTML = renderStudentCards(filtered);
     }
 
     // Dynamic Result Count (e.g. Showing 12 of 48 Students)

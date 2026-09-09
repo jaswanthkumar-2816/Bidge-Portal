@@ -6558,3 +6558,416 @@ body.student-portal-body {
     justify-content: center;
   }
 }
+
+/* ==========================================================================
+   COMPACT SLEEK STUDENT POOL CARDS STREAM (PICTURE 2 REDESIGN)
+   ========================================================================== */
+.student-cards-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.student-pool-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(8, 14, 10, 0.82) 0%, rgba(4, 8, 5, 0.9) 100%);
+  border: 1px solid rgba(0, 255, 102, 0.16);
+  border-radius: 18px;
+  padding: 18px 24px 16px 24px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.student-pool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 255, 102, 0.04), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.student-pool-card:hover {
+  border-color: rgba(0, 255, 102, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 255, 102, 0.12), inset 0 1px 0 rgba(0, 255, 102, 0.15);
+}
+
+.student-pool-card:hover::before {
+  opacity: 1;
+}
+
+/* Card Top Section: Identity & Stats */
+.student-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Identity Left */
+.student-identity-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.student-avatar-ring {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #07150a 0%, #020502 100%);
+  border: 2px solid #00ff66;
+  box-shadow: 0 0 16px rgba(0, 255, 102, 0.5), inset 0 0 8px rgba(0, 255, 102, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.1rem;
+  font-family: var(--font-heading), 'Outfit', sans-serif;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
+  transition: transform 0.25s ease;
+}
+
+.student-pool-card:hover .student-avatar-ring {
+  transform: scale(1.04);
+  box-shadow: 0 0 22px rgba(0, 255, 102, 0.7), inset 0 0 10px rgba(0, 255, 102, 0.4);
+}
+
+.student-identity-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.student-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.student-card-name {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  font-family: var(--font-heading), 'Outfit', sans-serif;
+  line-height: 1.2;
+}
+
+.student-card-name:hover {
+  color: #00ff66;
+  cursor: pointer;
+}
+
+.badge-verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 255, 102, 0.12);
+  border: 1px solid rgba(0, 255, 102, 0.45);
+  color: #00ff66;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.15);
+  transition: all 0.2s ease;
+}
+
+.badge-verified-pill:hover {
+  background: rgba(0, 255, 102, 0.22);
+  border-color: #00ff66;
+  box-shadow: 0 0 16px rgba(0, 255, 102, 0.35);
+}
+
+.badge-verified-pill.pending {
+  background: rgba(234, 179, 8, 0.12);
+  border-color: rgba(234, 179, 8, 0.45);
+  color: #facc15;
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.15);
+}
+
+.badge-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.badge-status-pill.active {
+  background: rgba(0, 255, 102, 0.08);
+  border: 1px solid rgba(0, 255, 102, 0.3);
+  color: #00ff66;
+}
+
+.badge-status-pill.placed {
+  background: rgba(168, 85, 247, 0.14);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #d8b4fe;
+}
+
+.badge-status-pill.ineligible {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.student-card-subline {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-family: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.student-card-subline .sub-roll {
+  font-family: 'JetBrains Mono', monospace;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.student-card-subline .sub-dept {
+  color: #00ff66;
+  font-weight: 600;
+}
+
+.student-card-subline .sub-dot {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Right Stats Cluster */
+.student-card-stats-cluster {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.student-metric-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 68px;
+  text-align: center;
+}
+
+.student-metric-box .metric-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: #00ff66;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  font-family: var(--font-sans), sans-serif;
+}
+
+.student-metric-box .metric-tag.dim {
+  color: #64748b;
+}
+
+.student-metric-box .metric-number {
+  font-size: 1.65rem;
+  font-weight: 900;
+  line-height: 1;
+  font-family: var(--font-heading), 'Outfit', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.student-metric-box .metric-number.cgpa-number {
+  color: #00ff66;
+  text-shadow: 0 0 14px rgba(0, 255, 102, 0.5);
+}
+
+.student-metric-box .metric-number.count-number {
+  color: #ffffff;
+}
+
+.student-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.btn-card-action {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-card-action:hover {
+  background: rgba(0, 255, 102, 0.12);
+  border-color: rgba(0, 255, 102, 0.4);
+  color: #00ff66;
+  box-shadow: 0 0 12px rgba(0, 255, 102, 0.2);
+}
+
+.btn-card-action.delete {
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.2);
+  padding: 7px 10px;
+}
+
+.btn-card-action.delete:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ef4444;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
+}
+
+/* Card Divider */
+.student-card-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(0, 255, 102, 0.25) 0%, rgba(255, 255, 255, 0.06) 60%, rgba(255, 255, 255, 0.02) 100%);
+  margin: 14px 0 12px 0;
+}
+
+/* Card Bottom Section: Competencies & Master Resume */
+.student-card-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.student-competencies-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.competencies-heading {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  color: #00ff66;
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-family: var(--font-sans), sans-serif;
+}
+
+.competency-chips-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.competency-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #00ff66;
+  background: rgba(0, 255, 102, 0.06);
+  border: 1px solid rgba(0, 255, 102, 0.25);
+  border-radius: 7px;
+  padding: 3px 10px;
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
+}
+
+.competency-chip:hover {
+  background: rgba(0, 255, 102, 0.16);
+  border-color: #00ff66;
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
+}
+
+.applied-opp-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 7px;
+  padding: 3px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-master-resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  padding: 6px 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  font-family: var(--font-sans), sans-serif;
+}
+
+.btn-master-resume:hover {
+  background: rgba(0, 255, 102, 0.12);
+  border-color: #00ff66;
+  color: #00ff66;
+  box-shadow: 0 0 16px rgba(0, 255, 102, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-master-resume svg {
+  color: #00ff66;
+}
+
+@media (max-width: 900px) {
+  .student-card-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .student-card-stats-cluster {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .student-card-bottom-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .btn-master-resume {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
