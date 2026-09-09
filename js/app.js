@@ -5,7 +5,43 @@
 window.app = (function () {
   let currentRole = 'coordinator'; // Default landing role: coordinator | admin | student
 
+  // Initialize interactive motion replay for the Hero Brand Logo
+  function initHeroLogoMotion() {
+    const heroLogoFrame = document.getElementById('hero-logo-frame');
+    if (!heroLogoFrame) return;
+
+    heroLogoFrame.addEventListener('click', () => {
+      const img = heroLogoFrame.querySelector('.approved-hiero-hero-img');
+      const shockwaves = heroLogoFrame.querySelectorAll('.logo-reveal-shockwave');
+      const sheen = heroLogoFrame.querySelector('.logo-sheen-sweep-layer');
+      const glow = heroLogoFrame.querySelector('.logo-ambient-green-glow');
+
+      if (img) {
+        img.style.animation = 'none';
+        void img.offsetWidth; // Force reflow
+        img.style.animation = 'discordLogoReveal 1.25s cubic-bezier(0.34, 1.56, 0.64, 1) both, heroBiomorphicFloat 6s ease-in-out 1.35s infinite alternate';
+      }
+      shockwaves.forEach((sw, idx) => {
+        sw.style.animation = 'none';
+        void sw.offsetWidth;
+        sw.style.animation = `logoShockwave ${idx === 0 ? '1.1s' : '1.25s'} cubic-bezier(0.16, 1, 0.3, 1) ${idx === 0 ? '0.32s' : '0.48s'} both`;
+      });
+      if (sheen) {
+        const sheenBefore = sheen.querySelector('::before');
+        sheen.style.display = 'none';
+        void sheen.offsetWidth;
+        sheen.style.display = '';
+      }
+      if (glow) {
+        glow.style.animation = 'none';
+        void glow.offsetWidth;
+        glow.style.animation = 'ambientGlowBloom 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both';
+      }
+    });
+  }
+
   async function init() {
+    initHeroLogoMotion();
     const loginScreen = document.getElementById('login-screen');
     const appContainer = document.getElementById('app-container');
 
@@ -181,24 +217,105 @@ window.app = (function () {
     const userName = document.getElementById('header-user-name');
     const rolePill = document.getElementById('header-role-pill');
 
+    const flyoutAvatar = document.getElementById('flyout-user-avatar');
+    const flyoutName = document.getElementById('flyout-user-name');
+    const flyoutEmail = document.getElementById('flyout-user-email');
+    const flyoutRole = document.getElementById('flyout-role-badge');
+    const flyoutInst = document.getElementById('flyout-inst-tag');
+
+    const college = window.bridgeStore ? window.bridgeStore.state.college : { name: 'NIT Warangal' };
+    const instShort = college?.code || 'NIT Warangal';
+
     if (role === 'coordinator') {
       if (avatar) avatar.textContent = 'TP';
       if (userName) userName.textContent = 'Dr. Ramesh Kulkarni (TPO)';
       if (rolePill) rolePill.textContent = 'Placement Coordinator';
+
+      if (flyoutAvatar) flyoutAvatar.textContent = 'TP';
+      if (flyoutName) flyoutName.textContent = 'Dr. Ramesh Kulkarni';
+      if (flyoutEmail) flyoutEmail.textContent = 'tpo@nitw.ac.in';
+      if (flyoutRole) flyoutRole.textContent = 'Placement Coordinator';
+      if (flyoutInst) flyoutInst.textContent = instShort;
     } else if (role === 'admin') {
       if (avatar) avatar.textContent = 'AD';
       if (userName) userName.textContent = 'Dr. V. Prasad (Principal/Admin)';
       if (rolePill) rolePill.textContent = 'College Administrator';
+
+      if (flyoutAvatar) flyoutAvatar.textContent = 'AD';
+      if (flyoutName) flyoutName.textContent = 'Dr. V. Prasad';
+      if (flyoutEmail) flyoutEmail.textContent = 'principal@nitw.ac.in';
+      if (flyoutRole) flyoutRole.textContent = 'College Administrator';
+      if (flyoutInst) flyoutInst.textContent = instShort;
     } else if (role === 'student') {
       const activeStudent = window.bridgeStore ? window.bridgeStore.getActiveStudent() : null;
-      if (avatar) avatar.textContent = activeStudent ? activeStudent.avatar : 'AS';
-      if (userName) userName.textContent = activeStudent ? `${activeStudent.name} (${activeStudent.regNo})` : 'Aarav Sharma';
+      const initials = activeStudent ? (activeStudent.avatar || 'AS') : 'AS';
+      const studentName = activeStudent ? activeStudent.name : 'Aarav Sharma';
+      const regNo = activeStudent ? activeStudent.regNo : '2022CS104';
+      const email = activeStudent ? activeStudent.email : 'aarav.sharma@student.nitw.ac.in';
+
+      if (avatar) avatar.textContent = initials;
+      if (userName) userName.textContent = `${studentName} (${regNo})`;
       if (rolePill) rolePill.textContent = 'Final-Year Student';
+
+      if (flyoutAvatar) flyoutAvatar.textContent = initials;
+      if (flyoutName) flyoutName.textContent = studentName;
+      if (flyoutEmail) flyoutEmail.textContent = email;
+      if (flyoutRole) flyoutRole.textContent = 'Final-Year Student';
+      if (flyoutInst) flyoutInst.textContent = `${instShort} • ${regNo}`;
+    }
+
+    // Update active check on flyout role items
+    document.querySelectorAll('.flyout-role-item').forEach(item => {
+      if (item.getAttribute('data-role') === role) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  // --- Profile Dropdown Handlers ---
+  function toggleProfileDropdown(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const wrapper = document.getElementById('profile-dropdown-wrapper');
+    const btn = document.getElementById('user-profile-btn');
+    if (!wrapper) return;
+
+    const isOpen = wrapper.classList.toggle('open');
+    if (btn) {
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+  }
+
+  function closeProfileDropdown() {
+    const wrapper = document.getElementById('profile-dropdown-wrapper');
+    const btn = document.getElementById('user-profile-btn');
+    if (wrapper) {
+      wrapper.classList.remove('open');
+    }
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  function switchRoleFromDropdown(role) {
+    closeProfileDropdown();
+    switchRole(role);
+  }
+
+  function openConnectSyncDrawer() {
+    if (window.connectSyncModule && typeof window.connectSyncModule.openConnectSyncModal === 'function') {
+      window.connectSyncModule.openConnectSyncModal();
+    } else if (window.connectSyncModule && typeof window.connectSyncModule.init === 'function') {
+      window.connectSyncModule.init();
     }
   }
 
   function showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
+    const container = document.getElementById('hiero-toast-container') || document.getElementById('toast-container');
     if (!container) return;
 
     const toast = document.createElement('div');
@@ -232,11 +349,29 @@ window.app = (function () {
     }
   }
 
+  // Close dropdown on outside click or ESC key
+  document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('profile-dropdown-wrapper');
+    if (wrapper && wrapper.classList.contains('open')) {
+      if (!wrapper.contains(e.target)) {
+        closeProfileDropdown();
+      }
+    }
+  });
 
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeProfileDropdown();
+    }
+  });
 
   return {
     init,
     switchRole,
+    switchRoleFromDropdown,
+    toggleProfileDropdown,
+    closeProfileDropdown,
+    openConnectSyncDrawer,
     updateHeaderUserBadge,
     showToast,
     resetAllData

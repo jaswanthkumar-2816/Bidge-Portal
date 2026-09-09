@@ -69,10 +69,13 @@
 
         <!-- B. Main Central Brand Visual & Holographic Platform -->
         <div class="brand-center-visual">
-          <!-- Exact Approved HIERO Logo (Preserved 100% Unchanged) -->
-          <div class="hero-logo-frame">
+          <!-- Exact Approved HIERO Logo with Premium Discord-Style Motion Reveal -->
+          <div class="hero-logo-frame" id="hero-logo-frame" title="Click to replay logo reveal animation">
+            <div class="logo-reveal-shockwave" aria-hidden="true"></div>
+            <div class="logo-reveal-shockwave shockwave-secondary" aria-hidden="true"></div>
+            <div class="logo-sheen-sweep-layer" aria-hidden="true"></div>
             <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge Approved Logo" class="approved-hiero-hero-img">
-            <div class="logo-ambient-green-glow"></div>
+            <div class="logo-ambient-green-glow" aria-hidden="true"></div>
           </div>
 
           <!-- Futuristic Holographic Projection Platform Underneath -->
@@ -346,22 +349,91 @@
       </nav>
 
 
-        <!-- Right: Integrated Account / Sign Out Control -->
+      <!-- Right: Integrated Account / Profile Dropdown -->
       <div class="top-header-actions">
-        <div class="user-profile-account-pill">
-          <div class="user-avatar-circle" id="header-user-avatar">TP</div>
-          <div class="user-profile-details">
-            <div class="user-full-name" id="header-user-name">Dr. Ramesh Kulkarni (TPO)</div>
-            <span class="user-role-label" id="header-role-pill">Placement Coordinator</span>
-          </div>
-          <button type="button" class="integrated-signout-btn" title="Sign Out to Welcome Screen" onclick="window.hieroAuth.logout()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
+        <!-- User Profile Dropdown Wrapper -->
+        <div class="profile-dropdown-wrapper" id="profile-dropdown-wrapper">
+          <button type="button" class="user-profile-account-pill" id="user-profile-btn" onclick="window.app.toggleProfileDropdown(event)" aria-expanded="false" aria-label="Account Menu">
+            <div class="user-avatar-circle" id="header-user-avatar">TP</div>
+            <div class="user-profile-details">
+              <div class="user-full-name" id="header-user-name">Dr. Ramesh Kulkarni (TPO)</div>
+              <span class="user-role-label" id="header-role-pill">Placement Coordinator</span>
+            </div>
+            <svg class="profile-dropdown-arrow" id="profile-dropdown-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
-            <span>Sign Out</span>
           </button>
+
+          <!-- Flyout Dropdown Menu -->
+          <div class="profile-flyout-card" id="profile-flyout-menu" role="menu">
+            <div class="profile-flyout-header">
+              <div class="profile-flyout-avatar" id="flyout-user-avatar">TP</div>
+              <div class="profile-flyout-info">
+                <div class="flyout-user-name" id="flyout-user-name">Dr. Ramesh Kulkarni</div>
+                <div class="flyout-user-email" id="flyout-user-email">tpo@nitw.ac.in</div>
+                <div class="flyout-badge-row">
+                  <span class="flyout-role-badge" id="flyout-role-badge">Placement Coordinator</span>
+                  <span class="flyout-inst-tag" id="flyout-inst-tag">NIT Warangal</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Switch Persona / Workspace -->
+            <div class="profile-flyout-section">
+              <div class="flyout-section-title">SWITCH WORKSPACE HUB</div>
+              <div class="flyout-role-options">
+                <button type="button" class="flyout-role-item active" data-role="coordinator" onclick="window.app.switchRoleFromDropdown('coordinator')">
+                  <span class="role-item-icon">📊</span>
+                  <div class="role-item-text">
+                    <strong>Placement Ops Hub</strong>
+                    <small>TPO & Candidate Dispatch</small>
+                  </div>
+                  <span class="role-item-check">✓</span>
+                </button>
+                <button type="button" class="flyout-role-item" data-role="admin" onclick="window.app.switchRoleFromDropdown('admin')">
+                  <span class="role-item-icon">🏛️</span>
+                  <div class="role-item-text">
+                    <strong>College Administrator</strong>
+                    <small>Database & Verification</small>
+                  </div>
+                  <span class="role-item-check">✓</span>
+                </button>
+                <button type="button" class="flyout-role-item" data-role="student" onclick="window.app.switchRoleFromDropdown('student')">
+                  <span class="role-item-icon">🎓</span>
+                  <div class="role-item-text">
+                    <strong>Student Gateway</strong>
+                    <small>Applications & AI Mock</small>
+                  </div>
+                  <span class="role-item-check">✓</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Ecosystem Links & Tools -->
+            <div class="profile-flyout-section">
+              <div class="flyout-section-title">ECOSYSTEM & TOOLS</div>
+              <button type="button" class="flyout-action-btn" onclick="window.app.openConnectSyncDrawer(); window.app.closeProfileDropdown();">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span>HIERO Connect Sync Simulator</span>
+              </button>
+              <button type="button" class="flyout-action-btn" onclick="window.app.resetAllData(); window.app.closeProfileDropdown();">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <span>Reset Master Database</span>
+              </button>
+            </div>
+
+            <div class="profile-flyout-divider"></div>
+
+            <!-- Sign Out CTA -->
+            <button type="button" class="flyout-signout-btn" onclick="window.hieroAuth ? window.hieroAuth.logout() : window.app.logout()">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span>Sign Out of HIERO Bridge</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
@@ -392,10 +464,6 @@
         </div>
 
         <div id="coordinator-view-container"></div>
-        <div id="admin-view-container" style="display: none;"></div>
-        <div id="student-view-container" style="display: none;"></div>
-      </main>
-    </div>
         <div id="admin-view-container" style="display: none;"></div>
         <div id="student-view-container" style="display: none;"></div>
       </main>
