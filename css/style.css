@@ -3805,7 +3805,7 @@ body.authenticated #login-screen,
 }
 
 #main-content-body {
-  padding: 16px 28px 48px !important;
+  padding: 24px 28px 48px !important;
   width: 100% !important;
   box-sizing: border-box !important;
   flex-grow: 1 !important;
