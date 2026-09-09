@@ -19,25 +19,31 @@
 </head>
 <body class="hiero-entry-body">
 
-  <!-- Luxury Startup Preloader (smooth transition overlay) -->
-  <div id="hiero-preloader" class="preloader-overlay" style="display: none;">
-    <div class="preloader-content">
-      <div class="preloader-emblem-wrap">
-        <div class="preloader-orbital-ring"></div>
-        <div class="preloader-orbital-ring ring-2"></div>
-        <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge" class="preloader-logo-img">
-        <div class="preloader-glow-halo"></div>
+  <!-- Premium Discord-Style Animated Logo Reveal Splash on Load/Reload -->
+  <div id="hiero-splash-reveal" class="splash-reveal-overlay" aria-label="HIERO Bridge Logo Reveal">
+    <div class="splash-reveal-stage">
+      <!-- Ambient Backlight Glow -->
+      <div class="splash-holo-ambient-glow" aria-hidden="true"></div>
+      
+      <!-- Concentric Orbital Rings -->
+      <div class="splash-rings-container" aria-hidden="true">
+        <div class="splash-ring splash-ring-1"></div>
+        <div class="splash-ring splash-ring-2"></div>
+        <div class="splash-ring splash-ring-3"></div>
       </div>
-      <div class="preloader-brand-title">HIERO <span>BRIDGE</span></div>
-      <div class="preloader-subtext">Spatial Talent Gateway</div>
-      <div class="preloader-progress-box">
-        <div class="preloader-progress-bar">
-          <div id="preloader-progress-fill" class="preloader-progress-fill"></div>
-        </div>
-        <div class="preloader-status-row">
-          <span id="preloader-status-text" class="preloader-status-text">Connecting to Spatial Operating Hub...</span>
-          <span id="preloader-percentage" class="preloader-percentage">0%</span>
-        </div>
+
+      <!-- Main Discord-Style Animated Logo Frame -->
+      <div class="splash-logo-frame">
+        <div class="splash-logo-shockwave" aria-hidden="true"></div>
+        <div class="splash-logo-shockwave secondary" aria-hidden="true"></div>
+        <div class="splash-logo-sheen-sweep" aria-hidden="true"></div>
+        <img src="assets/hiero-bridge-logo.png" alt="HIERO Bridge Logo" class="splash-logo-img">
+      </div>
+
+      <!-- Synchronized Brand Typography Track-in -->
+      <div class="splash-brand-text">
+        <div class="splash-brand-title">HIERO <span class="accent-green">BRIDGE</span></div>
+        <div class="splash-brand-sub">SPATIAL TALENT GATEWAY</div>
       </div>
     </div>
   </div>

@@ -40,7 +40,22 @@ window.app = (function () {
     });
   }
 
+  // Discord-Style Animated Logo Reveal on Page Load/Reload
+  function runSplashLogoReveal() {
+    const splash = document.getElementById('hiero-splash-reveal');
+    if (!splash) return;
+
+    // Hold the reveal sequence cleanly for 1.15s, then seamlessly dissolve into the dashboard
+    setTimeout(() => {
+      splash.classList.add('dismissed');
+      setTimeout(() => {
+        splash.style.display = 'none';
+      }, 550);
+    }, 1150);
+  }
+
   async function init() {
+    runSplashLogoReveal();
     const appContainer = document.getElementById('app-container');
     document.body.classList.add('authenticated');
 
