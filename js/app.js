@@ -41,12 +41,15 @@ window.app = (function () {
   }
 
   async function init() {
-    initHeroLogoMotion();
-    const loginScreen = document.getElementById('login-screen');
     const appContainer = document.getElementById('app-container');
+    document.body.classList.add('authenticated');
 
-    // Check for active session
-    const hasAuth = window.hieroAuth && window.hieroAuth.isAuthenticated();
+    if (appContainer) {
+      appContainer.style.display = 'flex';
+      appContainer.style.opacity = '1';
+      appContainer.style.transform = 'none';
+      appContainer.style.left = '0';
+    }
 
     // Check URL parameters for view or explicit roles
     const params = new URLSearchParams(window.location.search);
@@ -58,36 +61,6 @@ window.app = (function () {
     const viewParam = params.get('view') || params.get('role');
     const oppIdParam = params.get('oppId');
     const appIdParam = params.get('appId');
-
-    // PRIMARY REQUIREMENT: If not authenticated, ALWAYS show Login / Welcome Page first
-    if (!hasAuth) {
-      document.body.classList.remove('authenticated');
-      if (loginScreen) {
-        loginScreen.classList.remove('hidden');
-        loginScreen.style.display = 'flex';
-        loginScreen.style.opacity = '1';
-        loginScreen.style.transform = 'none';
-      }
-      if (appContainer) {
-        appContainer.style.display = 'none';
-        appContainer.style.transform = 'none';
-      }
-      return;
-    }
-
-    // Authenticated user experience:
-    document.body.classList.add('authenticated');
-    if (loginScreen) {
-      loginScreen.classList.add('hidden');
-      loginScreen.style.display = 'none';
-      loginScreen.style.transform = 'none';
-    }
-    if (appContainer) {
-      appContainer.style.display = 'flex';
-      appContainer.style.opacity = '1';
-      appContainer.style.transform = 'none';
-      appContainer.style.left = '0';
-    }
 
     // Check connection to live Backend REST API
     if (window.bridgeApi && typeof window.bridgeApi.checkBackendHealth === 'function') {
