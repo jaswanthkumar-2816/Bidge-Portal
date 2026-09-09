@@ -262,8 +262,9 @@ window.coordinatorModule = (function () {
         title: 'GENERATING APPLICATION GATEWAY',
         greenText: `FOR ${opp.company.toUpperCase()}`,
         subtext: 'SECURING DIRECT STUDENT APPLICATION LINK',
+        statusMsg: 'CRYPTOGRAPHICALLY ENCRYPTING OPPORTUNITY LINK...',
         icon: '🔗',
-        duration: 1800
+        duration: 3000
       });
     }
 
@@ -534,8 +535,9 @@ window.coordinatorModule = (function () {
         title: 'OPENING SCREENING MATRIX',
         greenText: `• ${opp.company.toUpperCase()}`,
         subtext: `${opp.title} • CALIBRATING RECRUITER EXPECTATIONS`,
+        statusMsg: 'CALCULATING CANDIDATE FIT SCORES & EXPECTATION THRESHOLDS...',
         icon: '⚡',
-        duration: 1800,
+        duration: 3000,
         onStageChange: () => renderCandidateScreeningScreen(opp)
       });
     } else {
@@ -551,8 +553,9 @@ window.coordinatorModule = (function () {
         title: 'RETURNING TO',
         greenText: 'PLACEMENT OPS HUB',
         subtext: 'DISPATCH & RECRUITER PIPELINE • SYNCHRONIZED',
+        statusMsg: 'RECONNECTING TO OPPORTUNITY PIPELINE...',
         icon: '📊',
-        duration: 1800,
+        duration: 3000,
         onStageChange: () => renderCoordinatorDashboard()
       });
     } else {

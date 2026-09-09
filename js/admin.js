@@ -420,8 +420,9 @@ window.adminModule = (function () {
         title: 'CALIBRATING',
         greenText: 'ADVANCED FILTERS',
         subtext: 'MINIMUM CGPA SLIDER & BATCH COHORTS',
+        statusMsg: 'LOADING ACADEMIC FILTER CRITERIA & COHORTS...',
         icon: '🔍',
-        duration: 1800
+        duration: 3000
       });
     }
 
@@ -677,8 +678,9 @@ window.adminModule = (function () {
         title: 'RECALIBRATING',
         greenText: 'TALENT POOL STREAM',
         subtext: activeList.length > 0 ? activeList.join(' • ') : 'SHOWING COMPLETE STUDENT TALENT POOL',
+        statusMsg: 'COMPUTING REAL-TIME STUDENT FILTER MATCHES...',
         icon: '⚡',
-        duration: 1800,
+        duration: 3000,
         onStageChange: () => filterStudentTable()
       });
     } else {
@@ -706,8 +708,9 @@ window.adminModule = (function () {
         title: 'RESTORING',
         greenText: 'COMPLETE TALENT POOL',
         subtext: 'ALL CGPA SCORES & BATCH COHORTS ACTIVE',
+        statusMsg: 'RESTORING ENTIRE VERIFIED STUDENT COHORT...',
         icon: '🔄',
-        duration: 1800,
+        duration: 3000,
         onStageChange: () => filterStudentTable()
       });
     } else {
@@ -804,8 +807,9 @@ window.adminModule = (function () {
         title: 'INITIALIZING',
         greenText: 'CAMPUS SETTINGS',
         subtext: 'INSTITUTION TIER & PLACEMENT CALIBRATION',
+        statusMsg: 'RETRIEVING INSTITUTION CONFIGURATION MATRIX...',
         icon: '🏛️',
-        duration: 1800
+        duration: 3000
       });
     }
     const college = window.bridgeStore.state.college;
@@ -870,8 +874,9 @@ window.adminModule = (function () {
         title: 'REGISTERING',
         greenText: 'NEW DEPARTMENT',
         subtext: 'ACADEMIC BRANCH & COHORT ALLOCATION',
+        statusMsg: 'PREPARING DEPARTMENT REGISTRATION SCHEMA...',
         icon: '📚',
-        duration: 1800
+        duration: 3000
       });
     }
     const modalHtml = `
@@ -917,8 +922,9 @@ window.adminModule = (function () {
         title: 'LOADING',
         greenText: 'STUDENT IMPORT ENGINE',
         subtext: 'CSV / JSON DATA VALIDATION PIPELINE',
+        statusMsg: 'CALIBRATING BATCH VALIDATION PARSER...',
         icon: '📥',
-        duration: 1800
+        duration: 3000
       });
     }
     const modalHtml = `
@@ -1175,8 +1181,9 @@ window.adminModule = (function () {
         title: 'ONBOARDING',
         greenText: 'STUDENT TALENT RECORD',
         subtext: 'ACADEMIC VERIFICATION & PROFILE REGISTRATION',
+        statusMsg: 'COMPOSING SECURE STUDENT TALENT PROFILE...',
         icon: '🎓',
-        duration: 1800
+        duration: 3000
       });
     }
     const depts = window.bridgeStore.state.college.departments;
@@ -1277,8 +1284,9 @@ window.adminModule = (function () {
         title: 'ACCESSING DOSSIER FOR',
         greenText: `${student.name.toUpperCase()}`,
         subtext: `${student.department} • CGPA ${Number(student.cgpa).toFixed(2)} • VERIFIED POOL`,
+        statusMsg: 'COMPILING VERIFIED COMPETENCY & APPLICATION DOSSIER...',
         icon: '👤',
-        duration: 1800
+        duration: 3000
       });
     }
 

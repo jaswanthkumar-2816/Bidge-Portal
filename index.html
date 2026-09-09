@@ -173,18 +173,45 @@
 
 
 
-  <!-- Spatial Navigation HUD & Laser Sweep Overlay -->
+  <!-- Spatial Navigation & Route Transition HUD (No Logo, Clean Cyber-HUD Aesthetics) -->
   <div id="spatial-transition-overlay" class="spatial-transition-overlay" aria-hidden="true">
     <div class="spatial-transition-laser"></div>
-    <div class="spatial-transition-hud" id="spatial-transition-hud">
-      <div class="hud-icon-ring" id="hud-icon-ring">⚡</div>
-      <div class="hud-text-block">
-        <div class="hud-badge-tag" id="hud-badge-tag">WORKSPACE NAVIGATION</div>
-        <div class="hud-title" id="hud-title">NAVIGATING TO <span class="accent-green">PLACEMENT OPS HUB</span></div>
-        <div class="hud-sub" id="hud-sub">SPATIAL TALENT PIPELINE • SYNCHRONIZING</div>
+    <div class="spatial-transition-stage">
+      <div class="spatial-trans-ambient-glow" aria-hidden="true"></div>
+
+      <!-- Holographic Navigation Card -->
+      <div class="spatial-navigation-card">
+        <!-- Icon & Status Radar Cluster -->
+        <div class="nav-hud-icon-cluster">
+          <div class="nav-hud-icon-ring" id="hud-icon-ring">⚡</div>
+          <div class="nav-hud-pulse-rings" aria-hidden="true">
+            <div class="pulse-ring ring-1"></div>
+            <div class="pulse-ring ring-2"></div>
+          </div>
+        </div>
+
+        <!-- Typography Block -->
+        <div class="nav-hud-content">
+          <div class="nav-hud-badge-row">
+            <span class="spatial-trans-badge" id="hud-badge-tag">WORKSPACE NAVIGATION</span>
+            <span class="nav-hud-live-tag">● SYNCHRONIZING</span>
+          </div>
+          <h2 class="spatial-trans-title" id="hud-title">NAVIGATING TO <span class="accent-green">PLACEMENT OPS HUB</span></h2>
+          <div class="spatial-trans-sub" id="hud-sub">SPATIAL TALENT PIPELINE • ACTIVE RECRUITER DRIVES</div>
+        </div>
+
+        <!-- 3-Second High-Precision Progress Tracker -->
+        <div class="nav-hud-progress-section">
+          <div class="nav-hud-progress-bar">
+            <div class="nav-hud-progress-fill" id="hud-progress-fill"></div>
+          </div>
+          <div class="nav-hud-status-row">
+            <span class="status-radar-dot"></span>
+            <span class="status-radar-text" id="hud-status-text">INITIALIZING SPATIAL DATA MATRIX...</span>
+            <span class="nav-hud-time-tag">3.0s</span>
+          </div>
+        </div>
       </div>
-      <div class="hud-pulse-radar"></div>
-      <div class="hud-progress-track"><div class="hud-progress-fill" id="hud-progress-fill"></div></div>
     </div>
   </div>
 

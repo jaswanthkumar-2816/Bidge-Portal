@@ -88,7 +88,7 @@ window.app = (function () {
       ? viewParam
       : (storedUser && storedUser.role ? storedUser.role : currentRole);
 
-    switchRole(initialRole);
+    switchRole(initialRole, true); // Skip navigation transition on initial startup so only website logo reveal plays
 
     if (oppIdParam && currentRole === 'coordinator') {
       setTimeout(() => {
@@ -134,16 +134,18 @@ window.app = (function () {
   }
 
   let transitionTimeout = null;
+  let transitionDismissTimeout = null;
 
-  // High-Impact Spatial Navigation HUD & Warp Transition
+  // Full-Screen Spatial Cyber-HUD Route Transition (Logo-free, 3-Second Precision HUD)
   function triggerSpatialTransition(options = {}) {
     const {
       tag = 'PAGE TRANSITION',
       title = 'NAVIGATING TO',
       greenText = 'WORKSPACE',
       subtext = 'SPATIAL TALENT PIPELINE • SYNCHRONIZED',
+      statusMsg = 'SYNCHRONIZING SPATIAL DATA MATRIX...',
       icon = '⚡',
-      duration = 1800,
+      duration = 3000,
       onStageChange = null
     } = options;
 
@@ -153,33 +155,54 @@ window.app = (function () {
     const hudSub = document.getElementById('hud-sub');
     const hudIcon = document.getElementById('hud-icon-ring');
     const hudProgress = document.getElementById('hud-progress-fill');
+    const hudStatus = document.getElementById('hud-status-text');
+    const timeTag = overlay ? overlay.querySelector('.nav-hud-time-tag') : null;
+    const laser = overlay ? overlay.querySelector('.spatial-transition-laser') : null;
 
     if (hudBadge) hudBadge.textContent = tag;
     if (hudTitle) hudTitle.innerHTML = `${title} <span class="accent-green">${greenText}</span>`;
     if (hudSub) hudSub.textContent = subtext;
     if (hudIcon) hudIcon.textContent = icon;
+    if (hudStatus) hudStatus.textContent = statusMsg;
+    if (timeTag) timeTag.textContent = `${(duration / 1000).toFixed(1)}s`;
 
     if (hudProgress) {
       hudProgress.style.animation = 'none';
       void hudProgress.offsetWidth; // Force reflow
-      hudProgress.style.animation = `hudProgressFill ${duration / 1000}s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
+      hudProgress.style.animation = `hudProgressFill ${duration / 1000}s linear forwards`;
+    }
+
+    if (laser) {
+      laser.style.animation = 'none';
+      void laser.offsetWidth;
+      laser.style.animation = `laserSweepTrack ${duration / 1000}s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
     }
 
     if (overlay) {
-      overlay.classList.remove('active');
+      overlay.classList.remove('active', 'dismissing');
       void overlay.offsetWidth; // Force reflow
       overlay.classList.add('active');
     }
 
+    // Switch view underneath during peak animation
     if (typeof onStageChange === 'function') {
       setTimeout(() => {
         onStageChange();
-      }, 70);
+      }, 550);
     }
 
     if (transitionTimeout) clearTimeout(transitionTimeout);
+    if (transitionDismissTimeout) clearTimeout(transitionDismissTimeout);
+
+    // Trigger smooth scale-up dissolve before removing overlay
+    transitionDismissTimeout = setTimeout(() => {
+      if (overlay) overlay.classList.add('dismissing');
+    }, Math.max(duration - 380, 600));
+
     transitionTimeout = setTimeout(() => {
-      if (overlay) overlay.classList.remove('active');
+      if (overlay) {
+        overlay.classList.remove('active', 'dismissing');
+      }
     }, duration);
   }
 
@@ -239,21 +262,24 @@ window.app = (function () {
         tag: 'PAGE NAVIGATION',
         title: 'NAVIGATING TO',
         greenText: 'PLACEMENT OPS HUB',
-        subtext: 'DISPATCH & RECRUITER PIPELINE • LIVE',
+        subtext: 'DISPATCH & RECRUITER PIPELINE • SYNCHRONIZING',
+        statusMsg: 'CALIBRATING RECRUITER PIPELINES & ACTIVE DRIVES...',
         icon: '📊'
       },
       admin: {
         tag: 'PAGE NAVIGATION',
         title: 'NAVIGATING TO',
         greenText: 'COLLEGE ADMIN CONSOLE',
-        subtext: 'INSTITUTION & VERIFIED TALENT POOL • LIVE',
+        subtext: 'INSTITUTION & VERIFIED TALENT POOL • SYNCHRONIZING',
+        statusMsg: 'INITIALIZING VERIFIED TALENT DATABASE...',
         icon: '🏛️'
       },
       student: {
         tag: 'PAGE NAVIGATION',
         title: 'NAVIGATING TO',
         greenText: 'STUDENT CAREER GATEWAY',
-        subtext: 'VERIFIED OPPORTUNITIES & DOSSIER • LIVE',
+        subtext: 'VERIFIED OPPORTUNITIES & DOSSIER • SYNCHRONIZING',
+        statusMsg: 'LOADING CANDIDATE PROFILE & APPLICATIONS...',
         icon: '🎓'
       }
     };
@@ -321,8 +347,9 @@ window.app = (function () {
         title: cfg.title,
         greenText: cfg.greenText,
         subtext: cfg.subtext,
+        statusMsg: cfg.statusMsg,
         icon: cfg.icon,
-        duration: 1800,
+        duration: 3000,
         onStageChange: executeViewSwitch
       });
     } else {
