@@ -1331,8 +1331,9 @@ body {
 }
 
 .page-container {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }
 
 .page-header {
@@ -3801,36 +3802,44 @@ body.authenticated #login-screen,
   transform: none !important;
 }
 
-/* Page Container — Spacious, Centered, Full-Width Distribution */
+/* Page Container — Full-Width Expansive Spatial Layout (No Side Gaps) */
 .page-container {
-  max-width: 1560px !important;
   width: 100% !important;
-  margin: 0 auto !important;
+  max-width: 100% !important;
+  margin: 0 !important;
   box-sizing: border-box !important;
 }
 
 #main-content-body {
-  padding: 24px 32px 64px !important;
+  padding: 16px 28px 48px !important;
   width: 100% !important;
   box-sizing: border-box !important;
   flex-grow: 1 !important;
 }
 
 /* ==========================================================================
-   CLEAN & MINIMAL ACCREDITED INSTITUTION BANNER
+   HIGH-IMPACT GLASSMORPHIC INSTITUTION STATUS RIBBON (GAP-FREE TELEMETRY)
    ========================================================================== */
 .institution-header-strip {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 0;
-  padding: 8px 4px 22px 4px;
-  margin-bottom: 26px;
+  background: linear-gradient(135deg, rgba(8, 14, 10, 0.78) 0%, rgba(4, 9, 6, 0.88) 100%);
+  border: 1px solid rgba(0, 255, 102, 0.16);
+  border-radius: 16px;
+  padding: 12px 22px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: none;
+  gap: 16px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   box-sizing: border-box;
+  transition: border-color 0.25s ease;
+}
+
+.institution-header-strip:hover {
+  border-color: rgba(0, 255, 102, 0.3);
 }
 
 .inst-strip-left {
@@ -3840,55 +3849,164 @@ body.authenticated #login-screen,
 }
 
 .inst-icon-shield {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(0, 255, 102, 0.06);
-  border: 1px solid rgba(0, 255, 102, 0.15);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: radial-gradient(circle at center, rgba(0, 255, 102, 0.14) 0%, rgba(0, 255, 102, 0.02) 100%);
+  border: 1.5px solid #00ff66;
   color: #00ff66;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 0 14px rgba(0, 255, 102, 0.35);
 }
 
-.inst-category-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #00ff66;
-  margin-bottom: 2px;
+.inst-identity-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inst-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .inst-title-name {
-  font-size: 1.18rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: #ffffff;
   margin: 0;
   letter-spacing: -0.2px;
+  font-family: var(--font-heading), 'Outfit', sans-serif;
+  line-height: 1.2;
+}
+
+.inst-pill-badge {
+  font-size: 0.70rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+}
+
+.inst-pill-badge.tier {
+  background: rgba(0, 255, 102, 0.12);
+  color: #00ff66;
+  border: 1px solid rgba(0, 255, 102, 0.35);
+}
+
+.inst-pill-badge.code {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.inst-category-sub {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #64748b;
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Middle Live Telemetry Chips */
+.inst-strip-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.inst-live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.76rem;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-family: var(--font-sans), sans-serif;
+}
+
+.inst-live-chip strong {
+  color: #ffffff;
+}
+
+.inst-live-chip.live-sync {
+  border-color: rgba(0, 255, 102, 0.22);
+  background: rgba(0, 255, 102, 0.05);
+}
+
+.pulsing-green-dot {
+  width: 7px;
+  height: 7px;
+  min-width: 7px;
+  border-radius: 50%;
+  background: #00ff66;
+  box-shadow: 0 0 8px #00ff66;
+  animation: pulseNeonDot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseNeonDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 6px #00ff66;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.75;
+    box-shadow: 0 0 14px #00ff66;
+  }
+}
+
+.inst-strip-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-inst-action {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 7px 16px;
+  padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
 }
 
 .btn-inst-action:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.22);
   color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-inst-action.primary {
+  background: rgba(0, 255, 102, 0.1);
+  border-color: rgba(0, 255, 102, 0.35);
+  color: #00ff66;
+}
+
+.btn-inst-action.primary:hover {
+  background: rgba(0, 255, 102, 0.2);
+  border-color: #00ff66;
+  box-shadow: 0 0 12px rgba(0, 255, 102, 0.25);
 }
 
 /* ==========================================================================
